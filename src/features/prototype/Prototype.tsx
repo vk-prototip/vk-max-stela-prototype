@@ -6,11 +6,10 @@ import {
   UserRound,
 } from 'lucide-react'
 import digitalSolutionsLogo from '../../assets/images/home/digital-solutions.png'
-import homeMaxButton from '../../assets/images/home/max-button.png'
 import homePointer from '../../assets/images/home/pointer.png'
-import homeVkButton from '../../assets/images/home/vk-video-button.png'
 import maxChatImage from '../../assets/images/results/max-chat.png'
 import { BackButton } from '../../components/BackButton'
+import { OnboardingScreen } from '../../components/OnboardingScreen'
 import { ProductMark } from '../../components/ProductMark'
 import { QuestionScreen } from '../../components/QuestionScreen'
 import {
@@ -18,9 +17,11 @@ import {
   maxGoalOptions,
   maxMissionDescriptions,
   maxMissionLabels,
+  maxPrompts,
   maxTransitionPrompt,
 } from '../../content/max'
-import { vkQuestions } from '../../content/vkVideo'
+import { onboardingCopy } from '../../content/onboarding'
+import { vkCopy, vkQuestions } from '../../content/vkVideo'
 import type {
   MaxAudience,
   MaxGoal,
@@ -31,6 +32,8 @@ import { getMaxMission, selectTopThemes } from './logic'
 
 type ScreenState =
   | { type: 'home' }
+  | { type: 'max-onboarding' }
+  | { type: 'vk-onboarding' }
   | { type: 'max-audience' }
   | { type: 'max-goal'; audience: MaxAudience }
   | { type: 'max-result'; mission: MaxMission }
@@ -78,6 +81,10 @@ export function Prototype() {
 
   const goBack = () => {
     switch (screen.type) {
+      case 'max-onboarding':
+      case 'vk-onboarding':
+        reset()
+        break
       case 'max-audience':
       case 'vk-question':
         if (screen.type === 'vk-question' && screen.index > 0) {
@@ -87,7 +94,7 @@ export function Prototype() {
             answers: screen.answers.slice(0, -1),
           })
         } else {
-          reset()
+          setScreen({ type: screen.type === 'max-audience' ? 'max-onboarding' : 'vk-onboarding' })
         }
         break
       case 'max-goal':
@@ -155,35 +162,25 @@ export function Prototype() {
           <div className="experience__content" key={screen.type}>
         {screen.type === 'home' && (
           <section className="screen screen--home" aria-labelledby="home-title">
-            <h1 id="home-title">Что тебе сейчас ближе?</h1>
+            <h1 id="home-title">{onboardingCopy.homeQuestion}</h1>
             <div className="product-choices">
               <button
                 className="product-choice product-choice--video"
                 type="button"
-                aria-label="Исследовать внешний мир с VK Видео"
+                aria-label="VK Видео"
                 onClick={() =>
-                  setScreen({ type: 'vk-question', index: 0, answers: [] })
+                  setScreen({ type: 'vk-onboarding' })
                 }
               >
-                <img
-                  className="product-choice__export"
-                  src={homeVkButton}
-                  alt=""
-                  aria-hidden="true"
-                />
+                <ProductMark product="vk-video" />
               </button>
               <button
                 className="product-choice product-choice--max"
                 type="button"
-                aria-label="Исследовать свои возможности в MAX"
-                onClick={() => setScreen({ type: 'max-audience' })}
+                aria-label="MAX"
+                onClick={() => setScreen({ type: 'max-onboarding' })}
               >
-                <img
-                  className="product-choice__export"
-                  src={homeMaxButton}
-                  alt=""
-                  aria-hidden="true"
-                />
+                <ProductMark product="max" />
               </button>
             </div>
             <img
@@ -194,10 +191,20 @@ export function Prototype() {
           </section>
         )}
 
+        {(screen.type === 'max-onboarding' || screen.type === 'vk-onboarding') && (
+          <OnboardingScreen
+            product={screen.type === 'max-onboarding' ? 'max' : 'vk-video'}
+            onStart={() => setScreen(screen.type === 'max-onboarding'
+              ? { type: 'max-audience' }
+              : { type: 'vk-question', index: 0, answers: [] })}
+            onBack={goBack}
+          />
+        )}
+
         {screen.type === 'max-audience' && (
           <QuestionScreen
             product="max"
-            prompt="Какие возможности ты хочешь освоить?"
+            prompt={maxPrompts.audience}
             options={maxAudienceOptions}
             onSelect={(audience) => setScreen({ type: 'max-goal', audience })}
             onBack={goBack}
@@ -207,7 +214,7 @@ export function Prototype() {
         {screen.type === 'max-goal' && (
           <QuestionScreen
             product="max"
-            prompt="Какой цели хочешь достичь?"
+            prompt={maxPrompts.goal}
             options={maxGoalOptions}
             onSelect={(goal: MaxGoal) =>
               setScreen({
@@ -261,7 +268,8 @@ export function Prototype() {
             <div className="digitize-symbol" aria-hidden="true">
               <UserRound />
             </div>
-            <h1 id="digitize-title">Хочешь, мы тебя оцифруем?</h1>
+            <h1 id="digitize-title">{vkCopy.digitizeQuestion}</h1>
+            <p className="digitize-description">{vkCopy.digitizeDescription}</p>
             <div className="digitize-actions">
               <button
                 className="primary-button"
@@ -270,7 +278,7 @@ export function Prototype() {
                   setScreen({ type: 'vk-scanning', themes: screen.themes })
                 }
               >
-                Да, давайте
+                {vkCopy.digitizeAccept}
               </button>
               <button
                 className="secondary-button"
@@ -279,7 +287,7 @@ export function Prototype() {
                   setScreen({ type: 'vk-final', themes: screen.themes })
                 }
               >
-                Пропустить
+                {vkCopy.digitizeSkip}
                 <ChevronRight aria-hidden="true" />
               </button>
             </div>
@@ -306,14 +314,14 @@ export function Prototype() {
             <div className="result-orbit result-orbit--video" aria-hidden="true">
               <Play />
             </div>
-            <h1 id="vk-result-title">Технология Discovery активирована</h1>
-            <p className="result-copy">пройди к левой стене</p>
+            <h1 id="vk-result-title">{vkCopy.finalTitle}</h1>
+            <p className="result-copy">{vkCopy.finalDirection}</p>
             <button
               className="primary-button result-reset result-thanks"
               type="button"
               onClick={reset}
             >
-              спасибо
+              {vkCopy.thanks}
             </button>
           </section>
         )}

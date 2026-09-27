@@ -1,5 +1,18 @@
 import type { VkQuestion, VkTheme } from '../types/prototype'
 
+// user-approved: Google Docs, «ТЕКСТ основной», 2026-09-27.
+// Existing answer IDs and topic weights are preserved from the agreed CJM.
+export const vkCopy = {
+  digitizeQuestion: 'Хочешь, мы тебя оцифруем?',
+  digitizeDescription: 'Создадим твой цифровой образ – и ты станешь героем своей персональной подборки',
+  digitizeAccept: 'Да, давайте',
+  digitizeSkip: 'Пропустить',
+  finalTitle: 'Технология Discovery активирована',
+  finalDirection: 'Пройди к левой панели, чтобы посмотреть подборку',
+  // user-approved in the earlier direct request; unchanged by the new document.
+  thanks: 'спасибо',
+}
+
 export const vkThemes: VkTheme[] = [
   'Сериалы и кино',
   'Юмор и стендап',
@@ -16,7 +29,7 @@ export const vkThemes: VkTheme[] = [
 export const vkQuestions: VkQuestion[] = [
   {
     id: 'evening',
-    prompt: 'Идеальный вечер после работы – это...',
+    prompt: 'Идеальный вечер после работы – это…',
     options: [
       {
         id: 'family-sofa',
@@ -26,27 +39,21 @@ export const vkQuestions: VkQuestion[] = [
       },
       {
         id: 'friends',
-        label: 'Собрать друзей, будет шумно',
+        label: 'Друзья, шум и веселье',
         plusTwo: 'Юмор и стендап',
         plusOne: 'Спорт',
       },
       {
         id: 'trip',
-        label: 'Спланировать следующую поездку',
+        label: 'Строить планы на отпуск',
         plusTwo: 'Путешествия и еда',
         plusOne: 'Подкасты и интервью',
-      },
-      {
-        id: 'training',
-        label: 'Тренировка или матч',
-        plusTwo: 'Спорт',
-        plusOne: 'Музыка и концерты',
       },
     ],
   },
   {
     id: 'good-video',
-    prompt: 'Хорошее видео – это когда...',
+    prompt: 'Хорошее видео – это когда…',
     options: [
       {
         id: 'drive',
@@ -68,7 +75,7 @@ export const vkQuestions: VkQuestion[] = [
       },
       {
         id: 'discovery',
-        label: '«Ого, я не знал!»',
+        label: 'Узнаёшь что-то новое',
         plusTwo: 'Наука и технологии',
         plusOne: 'Подкасты и интервью',
       },
@@ -76,29 +83,29 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'watch',
-    prompt: 'На экране вам интереснее всего следить...',
+    prompt: 'На экране интереснее всего следить…',
     options: [
       {
         id: 'family-stories',
-        label: 'За историями, которые цепляют и взрослых, и детей',
+        label: 'За историями, которые цепляют',
         plusTwo: 'Смотрим всей семьёй',
         plusOne: 'Наука и технологии',
       },
       {
         id: 'bright-people',
-        label: 'За яркими людьми в неожиданных ситуациях',
+        label: 'За людьми в неожиданных ситуациях',
         plusTwo: 'Шоу и реалити',
         plusOne: 'Сериалы и кино',
       },
       {
         id: 'experience',
-        label: 'За теми, кто делится опытом и мнением',
+        label: 'За теми, кто делится опытом',
         plusTwo: 'Подкасты и интервью',
         plusOne: 'Наука и технологии',
       },
       {
         id: 'change',
-        label: 'За теми, кто меняет себя и свою жизнь',
+        label: 'За теми, кто меняет свою жизнь',
         plusTwo: 'Лайфстайл и саморазвитие',
         plusOne: 'Путешествия и еда',
       },
@@ -106,17 +113,17 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'place',
-    prompt: 'Удобнее всего смотреть видео...',
+    prompt: 'Удобнее всего смотреть видео…',
     options: [
       {
         id: 'road',
-        label: 'В дороге, в наушниках',
+        label: 'В дороге и в наушниках',
         plusTwo: 'Подкасты и интервью',
         plusOne: 'Музыка и концерты',
       },
       {
         id: 'big-screen',
-        label: 'На большом экране, с попкорном',
+        label: 'На большом экране и с попкорном',
         plusTwo: 'Сериалы и кино',
         plusOne: 'Спорт',
       },
@@ -136,29 +143,29 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'surprise',
-    prompt: 'Discovery хочет вас удивить. Пусть покажет...',
+    prompt: 'Discovery хочет тебя удивить. Что звучит интригующе?',
     options: [
       {
         id: 'trending',
-        label: 'Что сейчас все обсуждают',
+        label: 'Новости и слухи',
         plusTwo: 'Шоу и реалити',
         plusOne: 'Юмор и стендап',
       },
       {
         id: 'future',
-        label: 'Каким будет будущее',
+        label: 'Мир будущего',
         plusTwo: 'Наука и технологии',
         plusOne: 'Сериалы и кино',
       },
       {
         id: 'concert',
-        label: 'Живой концерт из первого ряда',
+        label: 'Сцена и музыка',
         plusTwo: 'Музыка и концерты',
         plusOne: 'Юмор и стендап',
       },
       {
         id: 'hobby',
-        label: 'Что-то захватывающее',
+        label: 'Необычное хобби',
         plusTwo: 'Лайфстайл и саморазвитие',
         plusOne: 'Путешествия и еда',
       },

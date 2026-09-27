@@ -1,5 +1,11 @@
 import type { MaxAudience, MaxGoal, MaxMission } from '../types/prototype'
 
+// user-approved: Google Docs, «ТЕКСТ основной», 2026-09-27.
+export const maxPrompts = {
+  audience: 'Какие возможности ты хочешь освоить?',
+  goal: 'Какой цели хочешь достичь?',
+}
+
 export const maxAudienceOptions: Array<{
   id: MaxAudience
   label: string
@@ -28,10 +34,10 @@ export const maxMissionLabels: Record<MaxMission, string> = {
 }
 
 export const maxMissionDescriptions: Record<MaxMission, string> = {
-  'digital-id': 'Узнай, как Цифровой ID упрощает жизнь',
+  'digital-id': 'Узнай как Цифровой ID в MAX упрощает жизнь',
   communication: 'Попробуй все возможности общения в МАХ',
-  blogger: 'Развивай канал и смотри, как растет аудитория',
+  blogger: 'Развивай канал в MAX и смотри, как растёт аудитория',
   'business-promotion': 'Попробуй инструменты МАХ для бизнеса',
 }
 
-export const maxTransitionPrompt = 'Пройди к правой стене, чтобы начать'
+export const maxTransitionPrompt = 'Пройди к правой панели, чтобы начать'
