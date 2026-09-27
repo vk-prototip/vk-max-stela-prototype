@@ -129,9 +129,9 @@ button {
   transform-origin: top left;
 }
 
-.experience--home { background-image: url('../assets/images/backgrounds/home.png'); }
-.experience--vk { background-image: url('../assets/images/backgrounds/vk-video.png'); }
-.experience--max { background-image: url('../assets/images/backgrounds/max.png'); }
+.experience--home { background-image: url('../assets/images/backgrounds/home.webp'); }
+.experience--vk { background-image: url('../assets/images/backgrounds/vk-video.webp'); }
+.experience--max { background-image: url('../assets/images/backgrounds/max.webp'); }
 
 .experience__content {
   width: 100%;
