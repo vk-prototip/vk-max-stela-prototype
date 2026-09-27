@@ -21,8 +21,8 @@ if not exist "node_modules\" (
   )
 )
 
-echo Starting the prototype at http://127.0.0.1:5173/vk-max-stella-prototype/
-start "" powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 3; Start-Process 'http://127.0.0.1:5173/vk-max-stella-prototype/'"
+echo Starting the prototype at http://127.0.0.1:5173/vk-max-stela-prototype/
+start "" powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 3; Start-Process 'http://127.0.0.1:5173/vk-max-stela-prototype/'"
 call npm run dev
 
 if errorlevel 1 pause

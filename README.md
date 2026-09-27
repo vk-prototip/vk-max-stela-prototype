@@ -2,7 +2,7 @@
 
 Интерактивный прототип на React, TypeScript и Vite. Внутренний холст фиксирован на 1080 × 1920 и пропорционально масштабируется под окно браузера.
 
-Публичная версия: <https://vk-prototip.github.io/vk-max-stella-prototype/>
+Публичная версия: <https://vk-prototip.github.io/vk-max-stela-prototype/>
 
 ## Запуск
 
