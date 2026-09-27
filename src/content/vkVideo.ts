@@ -56,7 +56,7 @@ export const vkQuestions: VkQuestion[] = [
       },
       {
         id: 'laugh',
-        label: 'Смеяться до слёз',
+        label: 'Смеёшься до слёз',
         plusTwo: 'Юмор и стендап',
         plusOne: 'Смотрим всей семьёй',
       },
@@ -140,7 +140,7 @@ export const vkQuestions: VkQuestion[] = [
     options: [
       {
         id: 'trending',
-        label: 'То, что сейчас обсуждают все',
+        label: 'Что сейчас все обсуждают',
         plusTwo: 'Шоу и реалити',
         plusOne: 'Юмор и стендап',
       },
@@ -158,7 +158,7 @@ export const vkQuestions: VkQuestion[] = [
       },
       {
         id: 'hobby',
-        label: 'Увлечение, которое вас захватит',
+        label: 'Что-то захватывающее',
         plusTwo: 'Лайфстайл и саморазвитие',
         plusOne: 'Путешествия и еда',
       },

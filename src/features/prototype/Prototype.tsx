@@ -306,15 +306,14 @@ export function Prototype() {
             <div className="result-orbit result-orbit--video" aria-hidden="true">
               <Play />
             </div>
-            <h1 id="vk-result-title">Загружаем в Дискавери</h1>
-            <p className="result-copy">Пройди к левой стене</p>
+            <h1 id="vk-result-title">Технология Discovery активирована</h1>
+            <p className="result-copy">пройди к левой стене</p>
             <button
-              className="icon-button result-reset"
+              className="primary-button result-reset result-thanks"
               type="button"
-              aria-label="Вернуться в начало"
               onClick={reset}
             >
-              <RotateCcw aria-hidden="true" />
+              спасибо
             </button>
           </section>
         )}

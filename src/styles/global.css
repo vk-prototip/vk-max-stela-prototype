@@ -514,6 +514,10 @@ button {
   margin-top: 64px;
 }
 
+.result-thanks {
+  min-width: 420px;
+}
+
 .scan-figure {
   position: relative;
   display: grid;
