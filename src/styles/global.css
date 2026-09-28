@@ -587,10 +587,11 @@ button {
 }
 
 .result-copy--description {
-  max-width: 760px;
+  max-width: 904px;
   font-family: 'VK Sans Text', Arial, sans-serif;
   font-size: 36px;
   text-wrap: balance;
+  white-space: normal;
 }
 
 .mission-label {
@@ -607,15 +608,7 @@ button {
 
 .mission-name {
   display: block;
-  white-space: nowrap;
-}
-
-.mission-name--digital-id {
-  font-size: 48px;
-}
-
-.mission-name--business-promotion {
-  font-size: 64px;
+  white-space: pre-line;
 }
 
 .result-copy--direction {
