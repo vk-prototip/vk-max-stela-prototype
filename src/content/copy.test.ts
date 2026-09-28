@@ -11,7 +11,7 @@ describe('approved September 27 copy', () => {
 
   it('has four answers in every VK question including the restored sports answer', () => {
     expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4, 4, 4])
-    expect(vkQuestions[0].options[3].label).toBe('спорт в любом формате')
+    expect(vkQuestions[0].options[3].label).toBe('Спорт в любом формате')
   })
 
   it('keeps the start invitation and sends each branch to its panel', () => {

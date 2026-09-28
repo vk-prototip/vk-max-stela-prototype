@@ -52,7 +52,7 @@ export const vkQuestions: VkQuestion[] = [
       {
         id: 'training',
         // user-approved: direct request, 2026-09-28; original CJM weights.
-        label: 'спорт в любом формате',
+        label: 'Спорт в любом формате',
         plusTwo: 'Спорт',
         plusOne: 'Музыка и концерты',
       },
