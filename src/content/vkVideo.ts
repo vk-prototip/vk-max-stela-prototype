@@ -4,11 +4,11 @@ import type { VkQuestion, VkTheme } from '../types/prototype'
 // Existing answer IDs and topic weights are preserved from the agreed CJM.
 export const vkCopy = {
   digitizeQuestion: 'Хочешь, мы тебя оцифруем?',
-  digitizeDescription: 'Создадим твой цифровой образ – и ты станешь героем своей персональной подборки',
+  digitizeDescription: 'Создадим твой цифровой образ\nи ты станешь героем своей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
   finalTitle: 'Технология Discovery активирована',
-  finalDirection: 'Пройди к левой панели, чтобы посмотреть подборку',
+  finalDirection: 'Пройди к левой панели,\nчтобы посмотреть подборку',
   // user-approved in the earlier direct request; unchanged by the new document.
   thanks: 'спасибо',
 }

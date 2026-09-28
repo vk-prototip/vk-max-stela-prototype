@@ -40,4 +40,6 @@ export const maxMissionDescriptions: Record<MaxMission, string> = {
   'business-promotion': 'Попробуй инструменты МАХ для бизнеса',
 }
 
-export const maxTransitionPrompt = 'Пройди к правой панели, чтобы начать'
+// user-approved: direct copy and line-break correction, 2026-09-28.
+export const maxTransitionPrompt = 'Пройди к правой панели,\nчтобы начать'
+export const maxChooseAnotherMission = 'Подобрать другую миссию'

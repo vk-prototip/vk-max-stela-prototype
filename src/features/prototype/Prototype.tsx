@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ChevronRight,
   Play,
-  RotateCcw,
   UserRound,
 } from 'lucide-react'
 import homePointer from '../../assets/images/home/pointer.png'
@@ -13,6 +12,7 @@ import { ProductMark } from '../../components/ProductMark'
 import { QuestionScreen } from '../../components/QuestionScreen'
 import {
   maxAudienceOptions,
+  maxChooseAnotherMission,
   maxGoalOptions,
   maxMissionDescriptions,
   maxMissionLabels,
@@ -236,12 +236,11 @@ export function Prototype() {
               {maxTransitionPrompt}
             </p>
             <button
-              className="icon-button result-reset"
+              className="secondary-button result-reset"
               type="button"
-              aria-label="Вернуться в начало"
-              onClick={reset}
+              onClick={() => setScreen({ type: 'max-audience' })}
             >
-              <RotateCcw aria-hidden="true" />
+              {maxChooseAnotherMission}
             </button>
           </section>
         )}
