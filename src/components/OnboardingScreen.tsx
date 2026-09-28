@@ -16,7 +16,9 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
       <div className="onboarding-intro">
         <h1 id="onboarding-title">{onboardingCopy.welcome}</h1>
         <p className="onboarding-subtitle">{onboardingCopy.headline}</p>
-        <p className="onboarding-description">{onboardingDescriptions[product]}</p>
+        <p className={`onboarding-description onboarding-description--${product}`}>
+          {onboardingDescriptions[product]}
+        </p>
       </div>
       <div className="onboarding-actions">
         <p className="onboarding-voice">{onboardingCopy.voice}</p>

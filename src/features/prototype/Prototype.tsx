@@ -228,7 +228,9 @@ export function Prototype() {
             </div>
             <h1 id="max-result-title">
               <span className="mission-label">Миссия</span>{' '}
-              «{maxMissionLabels[screen.mission]}»
+              <span className={`mission-name mission-name--${screen.mission}`}>
+                «{maxMissionLabels[screen.mission]}»
+              </span>
             </h1>
             <p className="result-copy result-copy--description">
               {maxMissionDescriptions[screen.mission]}
