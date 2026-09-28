@@ -279,15 +279,6 @@ button {
   outline-offset: 8px;
 }
 
-.digital-solutions-mark {
-  position: absolute;
-  top: 1500px;
-  left: 265px;
-  width: 552px;
-  height: 165px;
-  object-fit: contain;
-}
-
 .screen--question {
   justify-content: center;
 }

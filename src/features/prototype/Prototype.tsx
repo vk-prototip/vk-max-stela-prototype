@@ -5,7 +5,6 @@ import {
   RotateCcw,
   UserRound,
 } from 'lucide-react'
-import digitalSolutionsLogo from '../../assets/images/home/digital-solutions.png'
 import homePointer from '../../assets/images/home/pointer.png'
 import maxChatImage from '../../assets/images/results/max-chat.png'
 import { BackButton } from '../../components/BackButton'
@@ -183,11 +182,6 @@ export function Prototype() {
                 <ProductMark product="max" />
               </button>
             </div>
-            <img
-              className="digital-solutions-mark"
-              src={digitalSolutionsLogo}
-              alt="Цифровые решения"
-            />
           </section>
         )}
 
