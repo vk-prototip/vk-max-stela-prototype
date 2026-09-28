@@ -27,7 +27,7 @@ export const maxGoalOptions: Array<{
 ]
 
 export const maxMissionLabels: Record<MaxMission, string> = {
-  'digital-id': 'Все возможности с Цифровым ID',
+  'digital-id': 'Все возможности\nс Цифровым ID',
   communication: 'Общение без границ',
   blogger: 'Стать блогером',
   'business-promotion': 'Продвижение бизнеса',
@@ -36,7 +36,7 @@ export const maxMissionLabels: Record<MaxMission, string> = {
 export const maxMissionDescriptions: Record<MaxMission, string> = {
   'digital-id': 'Узнай как Цифровой ID в MAX упрощает жизнь',
   communication: 'Попробуй все возможности общения в МАХ',
-  blogger: 'Развивай канал в MAX и смотри, как растёт аудитория',
+  blogger: 'Развивай канал в MAX\nи смотри, как растёт аудитория',
   'business-promotion': 'Попробуй инструменты МАХ для бизнеса',
 }
 

@@ -227,7 +227,8 @@ export function Prototype() {
               <img src={maxChatImage} alt="" />
             </div>
             <h1 id="max-result-title">
-              Миссия «{maxMissionLabels[screen.mission]}»
+              <span className="mission-label">Миссия</span>{' '}
+              «{maxMissionLabels[screen.mission]}»
             </h1>
             <p className="result-copy result-copy--description">
               {maxMissionDescriptions[screen.mission]}

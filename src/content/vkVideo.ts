@@ -60,7 +60,7 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'good-video',
-    prompt: 'Хорошее видео – это когда…',
+    prompt: 'Хорошее видео –\nэто когда…',
     options: [
       {
         id: 'drive',
@@ -150,7 +150,7 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'surprise',
-    prompt: 'Discovery хочет тебя удивить. Что звучит интригующе?',
+    prompt: 'Discovery хочет тебя удивить.\nЧто звучит интригующе?',
     options: [
       {
         id: 'trending',

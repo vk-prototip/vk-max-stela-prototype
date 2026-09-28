@@ -207,6 +207,7 @@ button {
   line-height: 1.08;
   letter-spacing: 0;
   text-wrap: balance;
+  white-space: pre-line;
 }
 
 .screen--home {
@@ -281,6 +282,10 @@ button {
 
 .screen--question {
   justify-content: center;
+}
+
+.screen--question h1 {
+  max-width: 904px;
 }
 
 .screen--onboarding {
@@ -578,7 +583,18 @@ button {
 
 .result-copy--description {
   max-width: 760px;
+  font-family: 'VK Sans Text', Arial, sans-serif;
+  font-size: 36px;
+  text-wrap: balance;
+}
+
+.mission-label {
+  display: block;
+  margin-bottom: 20px;
+  color: #dcecff;
   font-size: 32px;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .result-copy--direction {
