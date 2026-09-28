@@ -9,9 +9,9 @@ describe('approved September 27 copy', () => {
     expect(vkCopy.digitizeDescription).toBe('Создадим твой цифровой образ – и ты станешь героем своей персональной подборки')
   })
 
-  it('has three answers in the first VK question and four in the others', () => {
-    expect(vkQuestions.map(({ options }) => options.length)).toEqual([3, 4, 4, 4, 4])
-    expect(vkQuestions.flatMap(({ options }) => options).some(({ id }) => id === 'training')).toBe(false)
+  it('has four answers in every VK question including the restored sports answer', () => {
+    expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4, 4, 4])
+    expect(vkQuestions[0].options[3].label).toBe('спорт в любом формате')
   })
 
   it('keeps the start invitation and sends each branch to its panel', () => {
