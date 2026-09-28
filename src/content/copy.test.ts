@@ -5,7 +5,7 @@ import { maxTransitionPrompt } from './max'
 
 describe('approved September 27 copy', () => {
   it('keeps the two alternatives explicitly selected by the user', () => {
-    expect(onboardingDescriptions['vk-video']).toBe('Исследуй мир вместе с VK Видео. Расскажи, какой контент ты любишь, и Discovery сформирует персональную подборку')
+    expect(onboardingDescriptions['vk-video']).toBe('Исследуй мир вместе с VK Видео! Расскажи, какой контент ты любишь, и Discovery сформирует персональную подборку')
     expect(vkCopy.digitizeDescription).toBe('Создадим твой цифровой образ – и ты станешь героем своей персональной подборки')
   })
 
