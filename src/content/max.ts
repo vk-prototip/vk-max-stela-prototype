@@ -34,10 +34,10 @@ export const maxMissionLabels: Record<MaxMission, string> = {
 }
 
 export const maxMissionDescriptions: Record<MaxMission, string> = {
-  'digital-id': 'Узнай как Цифровой ID в MAX упрощает жизнь',
-  communication: 'Попробуй все возможности общения в МАХ',
+  'digital-id': 'Узнай, как Цифровой ID в MAX упрощает жизнь',
+  communication: 'Попробуй все возможности общения в MAX',
   blogger: 'Развивай канал в MAX и\u00a0смотри, как растёт аудитория',
-  'business-promotion': 'Попробуй инструменты МАХ для бизнеса',
+  'business-promotion': 'Попробуй инструменты MAX для бизнеса',
 }
 
 // user-approved: direct copy and line-break correction, 2026-09-28.
