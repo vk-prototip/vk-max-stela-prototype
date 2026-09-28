@@ -3,7 +3,7 @@ import type { VkQuestion, VkTheme } from '../types/prototype'
 // user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-28.
 // Existing answer IDs and topic weights are preserved from the agreed CJM.
 export const vkCopy = {
-  digitizeQuestion: 'Хочешь, мы тебя оцифруем?',
+  digitizeQuestion: 'Сделаем твоё фото?',
   digitizeDescription: 'Создадим твой цифровой образ,\nи ты станешь героем своей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
@@ -70,7 +70,7 @@ export const vkQuestions: VkQuestion[] = [
       },
       {
         id: 'laugh',
-        label: 'Когда реально смешно',
+        label: 'Остроумные ведущие',
         plusTwo: 'Юмор и стендап',
         plusOne: 'Смотрим всей семьёй',
       },
