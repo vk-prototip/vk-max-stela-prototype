@@ -1,6 +1,6 @@
 import type { VkQuestion, VkTheme } from '../types/prototype'
 
-// user-approved: Google Docs, «ТЕКСТ основной», 2026-09-27.
+// user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-28.
 // Existing answer IDs and topic weights are preserved from the agreed CJM.
 export const vkCopy = {
   digitizeQuestion: 'Хочешь, мы тебя оцифруем?',
@@ -29,7 +29,7 @@ export const vkThemes: VkTheme[] = [
 export const vkQuestions: VkQuestion[] = [
   {
     id: 'evening',
-    prompt: 'Идеальный вечер после работы – это…',
+    prompt: 'Что для тебя идеальный вечер?',
     options: [
       {
         id: 'family-sofa',
@@ -60,29 +60,29 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'good-video',
-    prompt: 'Хорошее видео –\nэто когда…',
+    prompt: 'Что делает видео классным?',
     options: [
       {
         id: 'drive',
-        label: 'Азарт и драйв',
+        label: 'Экшн и динамика',
         plusTwo: 'Спорт',
         plusOne: 'Шоу и реалити',
       },
       {
         id: 'laugh',
-        label: 'Смеёшься до слёз',
+        label: 'Когда реально смешно',
         plusTwo: 'Юмор и стендап',
         plusOne: 'Смотрим всей семьёй',
       },
       {
         id: 'inspiration',
-        label: 'Вдохновение и мурашки',
+        label: 'Атмосферный визуал',
         plusTwo: 'Музыка и концерты',
         plusOne: 'Лайфстайл и саморазвитие',
       },
       {
         id: 'discovery',
-        label: 'Узнаёшь что-то новое',
+        label: 'Интересные факты',
         plusTwo: 'Наука и технологии',
         plusOne: 'Подкасты и интервью',
       },
@@ -90,7 +90,8 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'watch',
-    prompt: 'На экране интереснее всего следить…',
+    // Source omits "на"; corrected during the requested grammar review.
+    prompt: 'За чем интереснее следить на экране?',
     options: [
       {
         id: 'family-stories',
@@ -120,7 +121,7 @@ export const vkQuestions: VkQuestion[] = [
   },
   {
     id: 'place',
-    prompt: 'Удобнее всего смотреть видео…',
+    prompt: 'Как тебе удобнее смотреть видео?',
     options: [
       {
         id: 'road',
