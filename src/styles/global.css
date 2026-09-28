@@ -301,8 +301,8 @@ button {
   width: 100%;
 }
 
-.onboarding-welcome {
-  margin: 0 0 32px;
+.onboarding-subtitle {
+  margin: 32px 0 0;
   font-family: 'VK Sans Text', Arial, sans-serif;
   color: #cbd6f0;
   font-size: 32px;
@@ -311,7 +311,7 @@ button {
 
 .screen--onboarding h1 {
   max-width: 856px;
-  font-size: 68px;
+  font-size: 76px;
   font-weight: 600;
   line-height: 1.12;
   text-wrap: pretty;

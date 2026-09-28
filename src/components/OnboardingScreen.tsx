@@ -14,8 +14,8 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
     <section className="screen screen--onboarding" aria-labelledby="onboarding-title">
       <ProductMark product={product} />
       <div className="onboarding-intro">
-        <p className="onboarding-welcome">{onboardingCopy.welcome}</p>
-        <h1 id="onboarding-title">{onboardingCopy.headline}</h1>
+        <h1 id="onboarding-title">{onboardingCopy.welcome}</h1>
+        <p className="onboarding-subtitle">{onboardingCopy.headline}</p>
         <p className="onboarding-description">{onboardingDescriptions[product]}</p>
       </div>
       <div className="onboarding-actions">
