@@ -3,7 +3,7 @@ import type { VkQuestion, VkTheme } from '../types/prototype'
 // user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-28.
 // Existing answer IDs and topic weights are preserved from the agreed CJM.
 export const vkCopy = {
-  digitizeQuestion: 'Сделаем твоё фото?',
+  digitizeQuestion: 'Сделаем фото?',
   digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',

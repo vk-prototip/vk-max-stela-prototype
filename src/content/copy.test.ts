@@ -15,6 +15,7 @@ describe('approved September 29 copy', () => {
   })
 
   it('has four answers in every VK question including the restored sports answer', () => {
+    expect(vkCopy.digitizeQuestion).toBe('Сделаем фото?')
     expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4, 4, 4])
     expect(vkQuestions[0].options[3].label).toBe('Спорт в любом формате')
   })

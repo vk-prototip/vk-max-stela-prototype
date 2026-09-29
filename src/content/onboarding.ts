@@ -19,7 +19,7 @@ export const onboardingIntroductions: Record<Product, {
     steps: [
       'Ответь на пару вопросов',
       'Получи персональную миссию\u00a0в\u00a0MAX',
-      'Узнай больше о пользе MAX для тебя',
+      'Узнай больше о\u00a0пользе MAX\u00a0для\u00a0тебя',
     ],
   },
   'vk-video': {
