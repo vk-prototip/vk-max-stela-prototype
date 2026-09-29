@@ -199,64 +199,6 @@ button {
   pointer-events: none;
 }
 
-.speech-toggle {
-  position: absolute;
-  top: 48px;
-  right: 48px;
-  z-index: 2;
-  width: 120px;
-  height: 120px;
-}
-
-.speech-toggle svg {
-  width: 48px;
-  height: 48px;
-}
-
-.speech-toggle[aria-pressed='true'] {
-  border-color: #67e8f9;
-  color: #67e8f9;
-}
-
-.speech-toggle:disabled {
-  opacity: 0.4;
-}
-
-.speech-error {
-  position: absolute;
-  top: 48px;
-  right: 200px;
-  left: 88px;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px 24px;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 6px;
-  background: #12233c;
-  font-family: 'VK Sans Text', Arial, sans-serif;
-  font-size: 30px;
-  line-height: 1.3;
-}
-
-.speech-error button {
-  display: grid;
-  flex: 0 0 48px;
-  height: 48px;
-  margin-left: auto;
-  padding: 0;
-  border: 0;
-  color: inherit;
-  background: transparent;
-  place-items: center;
-}
-
-.speech-error button svg {
-  width: 32px;
-  height: 32px;
-}
-
 .screen {
   display: flex;
   width: 100%;

@@ -21,5 +21,8 @@ describe('onboarding presentation', () => {
     expect(html).toContain('aria-label="MAX"')
     expect(html).not.toContain('onboarding-steps')
     expect(html).not.toContain(onboardingCopy.start)
+    expect(html).not.toContain('speech-toggle')
+    expect(html).not.toContain('speech-error')
+    expect(html).not.toContain('Включить озвучку')
   })
 })
