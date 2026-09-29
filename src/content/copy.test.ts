@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { onboardingCopy, onboardingDescriptions } from './onboarding'
+import { onboardingCopy, onboardingIntroductions } from './onboarding'
 import { vkCopy, vkQuestions } from './vkVideo'
 import { maxTransitionPrompt } from './max'
 
-describe('approved September 27 copy', () => {
-  it('keeps the two alternatives explicitly selected by the user', () => {
-    expect(onboardingDescriptions['vk-video'].replace(/\s+/g, ' ')).toBe('Исследуй мир вместе с VK Видео! Расскажи, какой контент ты любишь, и Discovery сформирует персональную подборку')
-    expect(vkCopy.digitizeDescription).toBe('Создадим твой цифровой образ,\nи ты станешь героем своей\nперсональной подборки')
+describe('approved September 29 copy', () => {
+  it('separates the spoken greeting from the on-screen steps', () => {
+    expect(onboardingCopy.spokenGreeting).toBe('Добро пожаловать в экосистему VK. Здесь лента подстраивается под тебя.')
+    expect(onboardingIntroductions.max.steps).toHaveLength(3)
+    expect(onboardingIntroductions['vk-video'].steps.map(step => step.replace(/\s+/g, ' '))).toEqual([
+      'Расскажи, какой контент ты любишь',
+      'Получи персональную подборку от технологии Discovery',
+    ])
+    expect(vkCopy.digitizeDescription.replace(/\s+/g, ' ')).toBe('На его основе превратим тебя в главного героя твоей персональной подборки')
   })
 
   it('has four answers in every VK question including the restored sports answer', () => {

@@ -1,18 +1,32 @@
 import type { Product } from '../types/prototype'
 
-// user-approved: Google Docs, «ТЕКСТ основной», 2026-09-27;
-// VK Видео description selected explicitly by the user.
-// Punctuation and MAX line break updated by direct user request, 2026-09-28.
+// user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-29.
+// Spoken greeting is distinct from the on-screen introduction.
 export const onboardingCopy = {
   homeQuestion: 'Что тебе сейчас ближе?',
-  welcome: 'Добро пожаловать\nв экосистему VK',
-  headline: 'Здесь лента подстраивается под тебя',
+  spokenGreeting: 'Добро пожаловать в экосистему VK. Здесь лента подстраивается под тебя.',
   voice: 'Со мной можно говорить своими словами. Скажи, например, «поехали»',
   touch: 'или просто нажми',
   start: 'НАЧАТЬ',
 }
 
-export const onboardingDescriptions: Record<Product, string> = {
-  max: 'Ответь на пару вопросов,\nполучи персональную миссию в MAX\nи узнай больше о своих возможностях',
-  'vk-video': 'Исследуй мир вместе с VK Видео!\nРасскажи, какой контент ты любишь, и Discovery сформирует персональную\u00a0подборку',
+export const onboardingIntroductions: Record<Product, {
+  title: string
+  steps: string[]
+}> = {
+  max: {
+    title: 'Исследуй свои\nвозможности с MAX!',
+    steps: [
+      'Ответь на пару вопросов',
+      'Получи персональную миссию\u00a0в\u00a0MAX',
+      'Узнай больше о пользе MAX для тебя',
+    ],
+  },
+  'vk-video': {
+    title: 'Исследуй мир\nвместе с VK Видео!',
+    steps: [
+      'Расскажи, какой контент ты любишь',
+      'Получи персональную подборку от\u00a0технологии\u00a0Discovery',
+    ],
+  },
 }

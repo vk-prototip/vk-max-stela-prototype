@@ -3,6 +3,9 @@ import {
   ChevronRight,
   Play,
   UserRound,
+  Volume2,
+  VolumeX,
+  X,
 } from 'lucide-react'
 import homePointer from '../../assets/images/home/pointer.png'
 import maxChatImage from '../../assets/images/results/max-chat.png'
@@ -20,6 +23,7 @@ import {
   maxTransitionPrompt,
 } from '../../content/max'
 import { onboardingCopy } from '../../content/onboarding'
+import { speechCopy } from '../../content/speech'
 import { vkCopy, vkQuestions } from '../../content/vkVideo'
 import type {
   MaxAudience,
@@ -28,6 +32,7 @@ import type {
   VkTheme,
 } from '../../types/prototype'
 import { getMaxMission, selectTopThemes } from './logic'
+import { useSpeech } from './useSpeech'
 
 type ScreenState =
   | { type: 'home' }
@@ -45,25 +50,57 @@ const homeState: ScreenState = { type: 'home' }
 const canvasWidth = 1080
 const canvasHeight = 1920
 
+function getScreenSpeech(screen: ScreenState): string {
+  switch (screen.type) {
+    case 'home': return onboardingCopy.homeQuestion
+    case 'max-onboarding':
+    case 'vk-onboarding': return `${onboardingCopy.spokenGreeting} ${onboardingCopy.voice}`
+    case 'max-audience': return maxPrompts.audience
+    case 'max-goal': return maxPrompts.goal
+    case 'max-result': return `Миссия «${maxMissionLabels[screen.mission]}». ${maxMissionDescriptions[screen.mission]}. ${maxTransitionPrompt}`
+    case 'vk-question': return vkQuestions[screen.index].prompt
+    case 'vk-digitize': return `${vkCopy.digitizeQuestion} ${vkCopy.digitizeDescription}`
+    case 'vk-scanning': return ''
+    case 'vk-final': return `${vkCopy.finalTitle}. ${vkCopy.finalDirection}`
+  }
+}
+
 export function Prototype() {
   const [screen, setScreen] = useState<ScreenState>(homeState)
   const [canvasScale, setCanvasScale] = useState(1)
+  const viewportRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLImageElement>(null)
+  const speech = useSpeech(getScreenSpeech(screen))
+  const speechLabel = !speech.supported
+    ? speechCopy.unsupported
+    : speech.error
+      ? `${speechCopy.errors[speech.error]}. ${speechCopy.retry}`
+      : speech.enabled ? speechCopy.disable : speechCopy.enable
 
   useLayoutEffect(() => {
     const fitCanvas = () => {
+      const viewport = viewportRef.current
+      if (!viewport) return
+      const style = window.getComputedStyle(viewport)
+      const width = viewport.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+      const height = viewport.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
       setCanvasScale(
         Math.min(
-          window.innerWidth / canvasWidth,
-          window.innerHeight / canvasHeight,
+          width / canvasWidth,
+          height / canvasHeight,
         ),
       )
     }
 
     fitCanvas()
+    const observer = new ResizeObserver(fitCanvas)
+    if (viewportRef.current) observer.observe(viewportRef.current)
     window.addEventListener('resize', fitCanvas)
 
-    return () => window.removeEventListener('resize', fitCanvas)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', fitCanvas)
+    }
   }, [])
 
   useEffect(() => {
@@ -137,6 +174,7 @@ export function Prototype() {
 
   return (
     <div
+      ref={viewportRef}
       className="prototype-viewport"
       onPointerMove={(event) => {
         if (event.pointerType !== 'mouse' || !cursorRef.current) return
@@ -158,6 +196,25 @@ export function Prototype() {
           className={`experience experience--${backgroundVariant}`}
           style={{ transform: `scale(${canvasScale})` }}
         >
+          <button
+            className="icon-button speech-toggle"
+            type="button"
+            aria-label={speechLabel}
+            title={speechLabel}
+            aria-pressed={speech.enabled}
+            disabled={!speech.supported}
+            onClick={speech.toggle}
+          >
+            {speech.enabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
+          </button>
+          {speech.error && (
+            <div className="speech-error" role="alert">
+              <span>{speechCopy.errors[speech.error]}</span>
+              <button type="button" aria-label={speechCopy.dismiss} onClick={speech.dismissError}>
+                <X aria-hidden="true" />
+              </button>
+            </div>
+          )}
           <div className="experience__content" key={screen.type}>
         {screen.type === 'home' && (
           <section className="screen screen--home" aria-labelledby="home-title">

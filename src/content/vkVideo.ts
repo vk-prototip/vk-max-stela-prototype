@@ -4,7 +4,7 @@ import type { VkQuestion, VkTheme } from '../types/prototype'
 // Existing answer IDs and topic weights are preserved from the agreed CJM.
 export const vkCopy = {
   digitizeQuestion: 'Сделаем твоё фото?',
-  digitizeDescription: 'Создадим твой цифровой образ,\nи ты станешь героем своей\nперсональной подборки',
+  digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
   finalTitle: 'Технология Discovery активирована',
