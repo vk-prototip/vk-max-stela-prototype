@@ -1,182 +1,71 @@
-import type { VkQuestion, VkTheme } from '../types/prototype'
+import type { AnswerOption, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
 
-// user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-28.
-// Existing answer IDs and topic weights are preserved from the agreed CJM.
+// client-verbatim: Google Doc "VK Видео_Стелла", scenario and recommendation rules.
+// Metadata and score weights: Google Sheets "Метаданные_VK_Видео_и_MAX".
 export const vkCopy = {
   digitizeQuestion: 'Сделаем фото?',
   digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
-  finalTitle: 'Технология Discovery активирована',
-  finalDirection: 'Пройди к левой панели,\nчтобы посмотреть подборку',
-  // user-approved in the earlier direct request; unchanged by the new document.
+  digitizeNotice: 'Отвечая “Да, давайте” вы принимаете условия использованием персональных данных.',
+  finalTitle: 'Мы уже подобрали контент, который совпадает с тобой настолько, что ты почти становишься его главным героем.',
+  finalDirection: 'Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.',
+  // user-approved in the earlier direct request; the new document does not specify this control.
   thanks: 'спасибо',
 }
 
 export const vkThemes: VkTheme[] = [
-  'Сериалы и кино',
-  'Юмор и стендап',
-  'Шоу и реалити',
+  'Кино',
+  'Медиа и шоу',
+  'Наука',
+  'Культура и образование',
+  'Игры и авто',
   'Спорт',
-  'Смотрим всей семьёй',
-  'Наука и технологии',
-  'Подкасты и интервью',
-  'Музыка и концерты',
-  'Путешествия и еда',
-  'Лайфстайл и саморазвитие',
+  'Новости и бизнес',
+  'Музыка',
 ]
 
-export const vkQuestions: VkQuestion[] = [
+export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption>, VkQuestion] = [
   {
     id: 'evening',
-    prompt: 'Что для тебя идеальный вечер?',
+    prompt: 'У вас внезапно освободился вечер. Что включаем?',
     options: [
-      {
-        id: 'family-sofa',
-        label: 'Диван, плед и вся семья рядом',
-        plusTwo: 'Сериалы и кино',
-        plusOne: 'Смотрим всей семьёй',
-      },
-      {
-        id: 'friends',
-        label: 'Друзья, шум и веселье',
-        plusTwo: 'Юмор и стендап',
-        plusOne: 'Спорт',
-      },
-      {
-        id: 'trip',
-        label: 'Строить планы на отпуск',
-        plusTwo: 'Путешествия и еда',
-        plusOne: 'Подкасты и интервью',
-      },
-      {
-        id: 'training',
-        // user-approved: direct request, 2026-09-28; original CJM weights.
-        label: 'Спорт в любом формате',
-        plusTwo: 'Спорт',
-        plusOne: 'Музыка и концерты',
-      },
+      { id: 'series', label: 'новый сериал, который все обсуждают', metadata: ['обсуждения', 'сериал', 'премьера', 'популярное'], plusTwo: 'Кино', plusOne: 'Музыка' },
+      { id: 'standup', label: 'стендап или что-нибудь смешное', metadata: ['шоу', 'стендап', 'юмор', 'комедия'], plusTwo: 'Медиа и шоу', plusOne: 'Игры и авто' },
+      { id: 'interview', label: 'интервью с интересным человеком', metadata: ['подкаст', 'новости', 'интервью', 'люди'], plusTwo: 'Культура и образование', plusOne: 'Новости и бизнес' },
+      { id: 'science', label: 'документалку или научпоп', metadata: ['наука', 'знания', 'документальное кино', 'научпоп'], plusTwo: 'Наука', plusOne: 'Спорт' },
     ],
   },
   {
-    id: 'good-video',
-    prompt: 'Что делает видео классным?',
+    id: 'ideal-content',
+    prompt: 'Каким должен быть идеальный контент на вечер?',
     options: [
-      {
-        id: 'drive',
-        label: 'Экшн и динамика',
-        plusTwo: 'Спорт',
-        plusOne: 'Шоу и реалити',
-      },
-      {
-        id: 'laugh',
-        label: 'Остроумные ведущие',
-        plusTwo: 'Юмор и стендап',
-        plusOne: 'Смотрим всей семьёй',
-      },
-      {
-        id: 'inspiration',
-        label: 'Атмосферный визуал',
-        plusTwo: 'Музыка и концерты',
-        plusOne: 'Лайфстайл и саморазвитие',
-      },
-      {
-        id: 'discovery',
-        label: 'Интересные факты',
-        plusTwo: 'Наука и технологии',
-        plusOne: 'Подкасты и интервью',
-      },
+      { id: 'drive', label: 'чтобы был драйв и азарт', metadata: ['драйв', 'азарт', 'игры', 'авто'], plusTwo: 'Игры и авто', plusOne: 'Кино' },
+      { id: 'heroes', label: 'чтобы переживать за героев', metadata: ['переживания', 'чувства', 'герои', 'эмоции'], plusTwo: 'Спорт', plusOne: 'Культура и образование' },
+      { id: 'learn', label: 'чтобы узнать что-то новое', metadata: ['культура', 'обучение', 'культура', 'факты'], plusTwo: 'Новости и бизнес', plusOne: 'Наука' },
+      { id: 'rest', label: 'чтобы отключить голову и отдохнуть', metadata: ['музыка', 'медиа', 'отдых', 'лёгкий контент'], plusTwo: 'Музыка', plusOne: 'Медиа и шоу' },
     ],
   },
   {
-    id: 'watch',
-    // Source omits "на"; corrected during the requested grammar review.
-    prompt: 'За чем интереснее следить на экране?',
+    id: 'discovery',
+    prompt: 'Рекомендации Discovery решили немного вас удивить. Что показывать?',
     options: [
-      {
-        id: 'family-stories',
-        label: 'За историями, которые цепляют',
-        plusTwo: 'Смотрим всей семьёй',
-        plusOne: 'Наука и технологии',
-      },
-      {
-        id: 'bright-people',
-        label: 'За людьми в неожиданных ситуациях',
-        plusTwo: 'Шоу и реалити',
-        plusOne: 'Сериалы и кино',
-      },
-      {
-        id: 'experience',
-        label: 'За теми, кто делится опытом',
-        plusTwo: 'Подкасты и интервью',
-        plusOne: 'Наука и технологии',
-      },
-      {
-        id: 'change',
-        label: 'За теми, кто меняет свою жизнь',
-        plusTwo: 'Лайфстайл и саморазвитие',
-        plusOne: 'Путешествия и еда',
-      },
-    ],
-  },
-  {
-    id: 'place',
-    prompt: 'Как тебе удобнее смотреть видео?',
-    options: [
-      {
-        id: 'road',
-        label: 'В дороге и в наушниках',
-        plusTwo: 'Подкасты и интервью',
-        plusOne: 'Музыка и концерты',
-      },
-      {
-        id: 'big-screen',
-        label: 'На большом экране и с попкорном',
-        plusTwo: 'Сериалы и кино',
-        plusOne: 'Спорт',
-      },
-      {
-        id: 'kitchen',
-        label: 'На кухне, пока готовится ужин',
-        plusTwo: 'Путешествия и еда',
-        plusOne: 'Шоу и реалити',
-      },
-      {
-        id: 'weekend',
-        label: 'В выходной, когда все дома',
-        plusTwo: 'Смотрим всей семьёй',
-        plusOne: 'Лайфстайл и саморазвитие',
-      },
-    ],
-  },
-  {
-    id: 'surprise',
-    prompt: 'Discovery хочет тебя удивить.\nЧто звучит интригующе?',
-    options: [
-      {
-        id: 'trending',
-        label: 'Новости и слухи',
-        plusTwo: 'Шоу и реалити',
-        plusOne: 'Юмор и стендап',
-      },
-      {
-        id: 'future',
-        label: 'Мир будущего',
-        plusTwo: 'Наука и технологии',
-        plusOne: 'Сериалы и кино',
-      },
-      {
-        id: 'concert',
-        label: 'Сцена и музыка',
-        plusTwo: 'Музыка и концерты',
-        plusOne: 'Юмор и стендап',
-      },
-      {
-        id: 'hobby',
-        label: 'Необычное хобби',
-        plusTwo: 'Лайфстайл и саморазвитие',
-        plusOne: 'Путешествия и еда',
-      },
+      { id: 'familiar', label: 'что-то похожее на то, что я уже люблю', metadata: ['рекомендации', 'для меня', 'персонализация', 'увлечения'] },
+      { id: 'new', label: 'новое, но по теме моих интересов', metadata: ['новинки', 'лайки', 'интересы', 'темы'] },
+      { id: 'hero', label: 'хочу стать героем VK Видео', metadata: ['образ', 'VK Видео', 'главный герой', 'роль'] },
+      { id: 'popular', label: 'то, чем прямо сейчас увлечены все.', metadata: ['тренды', 'яркое', 'все', 'топ-5'] },
     ],
   },
 ]
+
+export const vkPhotoOptions: Array<AnswerOption<'accept' | 'skip'>> = [
+  { id: 'accept', label: vkCopy.digitizeAccept, metadata: ['ракурс', 'освещение', 'композиция', 'обработка'] },
+  { id: 'skip', label: vkCopy.digitizeSkip, metadata: ['универсальное'] },
+]
+
+export const discoveryRules: Record<string, string> = {
+  familiar: 'По одному видео из Топ 2 тематик для пользователя',
+  new: 'Дополнительное видео из тематики 3 или 4',
+  hero: 'Формируется пул обложек с учетом выбранных тематик, на которых размещен образ пользователя',
+  popular: 'Самое популярное видео за последние 7 дней из каталога согласованных видео',
+}

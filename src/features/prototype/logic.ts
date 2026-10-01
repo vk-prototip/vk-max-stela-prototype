@@ -39,16 +39,17 @@ function shuffled<T>(items: T[], random: () => number) {
 }
 
 export function calculateThemeScores(answerIds: string[]): ThemeScore[] {
+  if (answerIds.length !== 2) throw new Error('VK theme scoring requires two answers')
   const scores = new Map<VkTheme, number>(
     vkThemes.map((theme) => [theme, 0]),
   )
 
   answerIds.forEach((answerId, questionIndex) => {
-    const option = vkQuestions[questionIndex]?.options.find(
+    const question = questionIndex === 0 ? vkQuestions[0] : vkQuestions[1]
+    const option = question.options.find(
       ({ id }) => id === answerId,
     )
-
-    if (!option) return
+    if (!option) throw new Error(`Unknown VK answer: ${answerId}`)
 
     scores.set(option.plusTwo, (scores.get(option.plusTwo) ?? 0) + 2)
     scores.set(option.plusOne, (scores.get(option.plusOne) ?? 0) + 1)
@@ -57,7 +58,7 @@ export function calculateThemeScores(answerIds: string[]): ThemeScore[] {
   return vkThemes.map((theme) => ({ theme, score: scores.get(theme) ?? 0 }))
 }
 
-export function selectTopThemes(
+export function rankThemes(
   answerIds: string[],
   random: () => number = Math.random,
 ): VkTheme[] {
@@ -71,16 +72,15 @@ export function selectTopThemes(
     const tiedThemes = scores
       .filter((item) => item.score === score)
       .map((item) => item.theme)
-    const available = 4 - selected.length
-
-    if (available <= 0) break
-
-    if (tiedThemes.length <= available) {
-      selected.push(...tiedThemes)
-    } else {
-      selected.push(...shuffled(tiedThemes, random).slice(0, available))
-    }
+    selected.push(...(tiedThemes.length === 1 ? tiedThemes : shuffled(tiedThemes, random)))
   }
 
   return selected
+}
+
+export function selectTopThemes(
+  answerIds: string[],
+  random: () => number = Math.random,
+): VkTheme[] {
+  return rankThemes(answerIds, random).slice(0, 3)
 }

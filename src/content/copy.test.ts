@@ -14,15 +14,17 @@ describe('approved September 29 copy', () => {
     expect(vkCopy.digitizeDescription.replace(/\s+/g, ' ')).toBe('На его основе превратим тебя в главного героя твоей персональной подборки')
   })
 
-  it('has four answers in every VK question including the restored sports answer', () => {
+  it('uses the new three-question VK script and conditional photo step', () => {
     expect(vkCopy.digitizeQuestion).toBe('Сделаем фото?')
-    expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4, 4, 4])
-    expect(vkQuestions[0].options[3].label).toBe('Спорт в любом формате')
+    expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4])
+    expect(vkQuestions[0].prompt).toBe('У вас внезапно освободился вечер. Что включаем?')
+    expect(vkQuestions[1].options[0].label).toBe('чтобы был драйв и азарт')
+    expect(vkQuestions[2].options[2].id).toBe('hero')
   })
 
   it('keeps the start invitation and sends each branch to its panel', () => {
     expect(onboardingCopy.voice).toBe('Со мной можно говорить своими словами. Скажи, например, «поехали»')
     expect(maxTransitionPrompt).toBe('Пройди к правой панели,\nчтобы начать')
-    expect(vkCopy.finalDirection).toBe('Пройди к левой панели,\nчтобы посмотреть подборку')
+    expect(vkCopy.finalDirection).toBe('Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.')
   })
 })

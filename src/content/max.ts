@@ -1,4 +1,4 @@
-import type { MaxAudience, MaxGoal, MaxMission } from '../types/prototype'
+import type { AnswerOption, MaxAudience, MaxGoal, MaxMission } from '../types/prototype'
 
 // user-approved: Google Docs, «ТЕКСТ основной», 2026-09-27.
 export const maxPrompts = {
@@ -6,24 +6,32 @@ export const maxPrompts = {
   goal: 'Какой цели хочешь достичь?',
 }
 
-export const maxAudienceOptions: Array<{
-  id: MaxAudience
-  label: string
-}> = [
-  { id: 'business', label: 'Для бизнеса' },
-  { id: 'personal', label: 'Для личного пользования' },
+// client-verbatim: Google Sheets, MAX!B2:J6, checked 2026-10-01.
+export const maxAudienceOptions: Array<AnswerOption<MaxAudience>> = [
+  {
+    id: 'business', label: 'Для бизнеса',
+    metadata: ['бизнес', 'MAX для бизнеса', 'бизнес-аккаунт', 'клиенты', 'продажи', 'поддержка клиентов', 'автоматизация', 'продвижение'],
+  },
+  {
+    id: 'personal', label: 'Для личного пользования',
+    metadata: ['комфорт', 'повседневность', 'семья', 'друзья', 'задачи', 'близкие', 'жизнь', 'безопасность'],
+  },
 ]
 
-export const maxGoalOptions: Array<{
-  id: MaxGoal
-  label: string
-}> = [
+export const maxGoalOptions: Array<AnswerOption<MaxGoal>> = [
   {
     id: 'access',
     label: 'Упростить идентификацию',
+    metadata: ['Цифровой ID', 'идентификация', 'удобство', 'документы', 'доступ', 'льготы', 'данные', 'надежность'],
   },
-  { id: 'connection', label: 'Быть на связи 24/7' },
-  { id: 'visibility', label: 'Повысить узнаваемость' },
+  {
+    id: 'connection', label: 'Быть на связи 24/7',
+    metadata: ['чаты', 'видеозвонки', 'аудиозвонки', 'голосовые', 'скорость', 'связь', 'файлы', 'стабильность'],
+  },
+  {
+    id: 'visibility', label: 'Повысить узнаваемость',
+    metadata: ['узнаваемость', 'аудитория', 'канал', 'контент', 'публикации', 'цели', 'инструменты', 'статистика'],
+  },
 ]
 
 export const maxMissionLabels: Record<MaxMission, string> = {

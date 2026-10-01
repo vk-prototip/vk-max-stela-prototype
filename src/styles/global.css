@@ -540,6 +540,15 @@ button {
   margin-top: 72px;
 }
 
+.digitize-notice {
+  max-width: 780px;
+  margin: 24px 0 0;
+  color: #dcecff;
+  font-family: 'VK Sans Text', Arial, sans-serif;
+  font-size: 26px;
+  line-height: 1.3;
+}
+
 .primary-button,
 .secondary-button {
   display: flex;
@@ -604,6 +613,12 @@ button {
 .screen--result h1 {
   max-width: 860px;
   font-size: 76px;
+}
+
+.screen--result #vk-result-title {
+  max-width: 904px;
+  font-size: 56px;
+  line-height: 1.16;
 }
 
 .result-copy {

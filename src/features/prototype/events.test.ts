@@ -1,0 +1,54 @@
+import { describe, expect, it } from 'vitest'
+import { maxAudienceOptions, maxGoalOptions } from '../../content/max'
+import { discoveryRules, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
+import { calculateThemeScores, rankThemes } from './logic'
+import { createEventPublisher, type StelaEvent } from './events'
+
+describe('answer event contract', () => {
+  it('emits the exact table tags for every MAX and VK answer', () => {
+    const events: StelaEvent[] = []
+    const publisher = createEventPublisher('session-1', { send: event => events.push(event) })
+    publisher.start('max')
+    for (const option of maxAudienceOptions) publisher.answer('max', 'audience', option)
+    for (const option of maxGoalOptions) publisher.answer('max', 'goal', option)
+    for (const question of vkQuestions) {
+      for (const option of question.options) publisher.answer('vk-video', question.id, option)
+    }
+    for (const option of vkPhotoOptions) publisher.answer('vk-video', 'photo', option)
+
+    const answers = events.filter(event => event.type === 'answer')
+    expect(answers).toHaveLength(19)
+    expect(answers.every(event => event.metadata.length > 0)).toBe(true)
+    expect(answers.map(event => event.sequence)).toEqual(Array.from({ length: 19 }, (_, index) => index + 2))
+    expect(answers.find(event => event.answerId === 'learn')?.metadata).toEqual(['культура', 'обучение', 'культура', 'факты'])
+    expect(answers.find(event => event.answerId === 'skip')?.metadata).toEqual(['универсальное'])
+    expect(answers.find(event => event.answerId === 'business')?.metadata).toEqual(maxAudienceOptions[0].metadata)
+  })
+
+  it('sends score deltas and a separate recommendation snapshot', () => {
+    const events: StelaEvent[] = []
+    const publisher = createEventPublisher('session-2', { send: event => events.push(event) })
+    publisher.start('vk-video')
+    publisher.answer('vk-video', 'evening', vkQuestions[0].options[0], { Кино: 2, Музыка: 1 })
+    publisher.answer('vk-video', 'ideal-content', vkQuestions[1].options[0], { 'Игры и авто': 2, Кино: 1 })
+    const ranked = rankThemes(['series', 'drive'], () => 0)
+    publisher.recommendation(calculateThemeScores(['series', 'drive']), ranked, 'familiar', discoveryRules.familiar, 'not-requested')
+    const recommendation = events[3]
+    expect(recommendation.type).toBe('vk-recommendation')
+    if (recommendation.type !== 'vk-recommendation') return
+    expect(recommendation.selectedThemes).toEqual(['Кино', 'Игры и авто', 'Музыка'])
+    expect(recommendation.rankedThemes).toHaveLength(8)
+    expect(recommendation.discoveryAnswerId).toBe('familiar')
+    expect(recommendation.photoMode).toBe('not-requested')
+  })
+
+  it('can revoke a selected answer after Back without reusing its event identity', () => {
+    const events: StelaEvent[] = []
+    const publisher = createEventPublisher('session-3', { send: event => events.push(event) })
+    publisher.answer('max', 'goal', maxGoalOptions[0])
+    publisher.clear('max', 'goal')
+    publisher.answer('max', 'goal', maxGoalOptions[1])
+    expect(events.map(event => event.type)).toEqual(['answer', 'answer-cleared', 'answer'])
+    expect(events.map(event => event.sequence)).toEqual([1, 2, 3])
+  })
+})

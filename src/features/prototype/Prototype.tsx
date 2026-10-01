@@ -20,14 +20,15 @@ import {
   maxTransitionPrompt,
 } from '../../content/max'
 import { onboardingCopy } from '../../content/onboarding'
-import { vkCopy, vkQuestions } from '../../content/vkVideo'
+import { discoveryRules, vkCopy, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
 import type {
   MaxAudience,
   MaxGoal,
   MaxMission,
   VkTheme,
 } from '../../types/prototype'
-import { getMaxMission, selectTopThemes } from './logic'
+import { calculateThemeScores, getMaxMission, rankThemes } from './logic'
+import { createBrowserEventSink, createEventPublisher } from './events'
 
 type ScreenState =
   | { type: 'home' }
@@ -37,7 +38,7 @@ type ScreenState =
   | { type: 'max-goal'; audience: MaxAudience }
   | { type: 'max-result'; mission: MaxMission }
   | { type: 'vk-question'; index: number; answers: string[] }
-  | { type: 'vk-digitize'; answers: string[]; themes: VkTheme[] }
+  | { type: 'vk-digitize'; answers: string[]; rankedThemes: VkTheme[] }
   | { type: 'vk-scanning'; themes: VkTheme[] }
   | { type: 'vk-final'; themes: VkTheme[] }
 
@@ -50,6 +51,8 @@ export function Prototype() {
   const [canvasScale, setCanvasScale] = useState(1)
   const viewportRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLImageElement>(null)
+  const [sink] = useState(createBrowserEventSink)
+  const [publisher, setPublisher] = useState(() => createEventPublisher(crypto.randomUUID(), sink))
 
   useLayoutEffect(() => {
     const fitCanvas = () => {
@@ -87,7 +90,15 @@ export function Prototype() {
     return () => window.clearTimeout(timeout)
   }, [screen])
 
-  const reset = () => setScreen(homeState)
+  const reset = () => {
+    setPublisher(createEventPublisher(crypto.randomUUID(), sink))
+    setScreen(homeState)
+  }
+
+  const startProduct = (product: 'max' | 'vk-video') => {
+    publisher.start(product)
+    setScreen({ type: product === 'max' ? 'max-onboarding' : 'vk-onboarding' })
+  }
 
   const goBack = () => {
     switch (screen.type) {
@@ -98,6 +109,7 @@ export function Prototype() {
       case 'max-audience':
       case 'vk-question':
         if (screen.type === 'vk-question' && screen.index > 0) {
+          publisher.clear('vk-video', vkQuestions[screen.index - 1].id)
           setScreen({
             type: 'vk-question',
             index: screen.index - 1,
@@ -108,13 +120,15 @@ export function Prototype() {
         }
         break
       case 'max-goal':
+        publisher.clear('max', 'audience')
         setScreen({ type: 'max-audience' })
         break
       case 'vk-digitize':
+        publisher.clear('vk-video', 'discovery')
         setScreen({
           type: 'vk-question',
-          index: vkQuestions.length - 1,
-          answers: screen.answers.slice(0, -1),
+          index: 2,
+          answers: screen.answers,
         })
         break
       default:
@@ -125,19 +139,36 @@ export function Prototype() {
   const selectVkAnswer = (answerId: string) => {
     if (screen.type !== 'vk-question') return
 
-    const answers = [...screen.answers, answerId]
-    const nextIndex = screen.index + 1
+    const question = vkQuestions[screen.index]
+    const option = question.options.find(({ id }) => id === answerId)
+    if (!option) return
 
-    if (nextIndex < vkQuestions.length) {
-      setScreen({ type: 'vk-question', index: nextIndex, answers })
+    if (screen.index < 2) {
+      const weightedQuestion = screen.index === 0 ? vkQuestions[0] : vkQuestions[1]
+      const weightedOption = weightedQuestion.options.find(({ id }) => id === answerId)!
+      publisher.answer('vk-video', question.id, weightedOption, { [weightedOption.plusTwo]: 2, [weightedOption.plusOne]: 1 })
+      setScreen({ type: 'vk-question', index: screen.index + 1, answers: [...screen.answers, answerId] })
       return
     }
 
-    setScreen({
-      type: 'vk-digitize',
-      answers,
-      themes: selectTopThemes(answers),
-    })
+    publisher.answer('vk-video', question.id, option)
+    const rankedThemes = rankThemes(screen.answers)
+    if (answerId === 'hero') {
+      setScreen({ type: 'vk-digitize', answers: screen.answers, rankedThemes })
+      return
+    }
+    publisher.recommendation(calculateThemeScores(screen.answers), rankedThemes, answerId, discoveryRules[answerId], 'not-requested')
+    setScreen({ type: 'vk-final', themes: rankedThemes.slice(0, 3) })
+  }
+
+  const selectPhoto = (answerId: 'accept' | 'skip') => {
+    if (screen.type !== 'vk-digitize') return
+    const option = vkPhotoOptions.find(({ id }) => id === answerId)!
+    publisher.answer('vk-video', 'photo', option)
+    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, answerId === 'accept' ? 'included' : 'skipped')
+    setScreen(answerId === 'accept'
+      ? { type: 'vk-scanning', themes: screen.rankedThemes.slice(0, 3) }
+      : { type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) })
   }
 
   const backgroundVariant = screen.type === 'home'
@@ -179,9 +210,7 @@ export function Prototype() {
                 className="product-choice product-choice--video"
                 type="button"
                 aria-label="VK Видео"
-                onClick={() =>
-                  setScreen({ type: 'vk-onboarding' })
-                }
+                onClick={() => startProduct('vk-video')}
               >
                 <ProductMark product="vk-video" />
               </button>
@@ -189,7 +218,7 @@ export function Prototype() {
                 className="product-choice product-choice--max"
                 type="button"
                 aria-label="MAX"
-                onClick={() => setScreen({ type: 'max-onboarding' })}
+                onClick={() => startProduct('max')}
               >
                 <ProductMark product="max" />
               </button>
@@ -212,7 +241,11 @@ export function Prototype() {
             product="max"
             prompt={maxPrompts.audience}
             options={maxAudienceOptions}
-            onSelect={(audience) => setScreen({ type: 'max-goal', audience })}
+            onSelect={(audience) => {
+              const option = maxAudienceOptions.find(({ id }) => id === audience)!
+              publisher.answer('max', 'audience', option)
+              setScreen({ type: 'max-goal', audience })
+            }}
             onBack={goBack}
           />
         )}
@@ -222,12 +255,14 @@ export function Prototype() {
             product="max"
             prompt={maxPrompts.goal}
             options={maxGoalOptions}
-            onSelect={(goal: MaxGoal) =>
+            onSelect={(goal: MaxGoal) => {
+              const option = maxGoalOptions.find(({ id }) => id === goal)!
+              publisher.answer('max', 'goal', option)
               setScreen({
                 type: 'max-result',
                 mission: getMaxMission(screen.audience, goal),
               })
-            }
+            }}
             onBack={goBack}
           />
         )}
@@ -253,7 +288,12 @@ export function Prototype() {
             <button
               className="secondary-button result-reset"
               type="button"
-              onClick={() => setScreen({ type: 'max-audience' })}
+              onClick={() => {
+                const nextPublisher = createEventPublisher(crypto.randomUUID(), sink)
+                nextPublisher.start('max')
+                setPublisher(nextPublisher)
+                setScreen({ type: 'max-audience' })
+              }}
             >
               {maxChooseAnotherMission}
             </button>
@@ -282,23 +322,20 @@ export function Prototype() {
               <button
                 className="primary-button"
                 type="button"
-                onClick={() =>
-                  setScreen({ type: 'vk-scanning', themes: screen.themes })
-                }
+                onClick={() => selectPhoto('accept')}
               >
                 {vkCopy.digitizeAccept}
               </button>
               <button
                 className="secondary-button"
                 type="button"
-                onClick={() =>
-                  setScreen({ type: 'vk-final', themes: screen.themes })
-                }
+                onClick={() => selectPhoto('skip')}
               >
                 {vkCopy.digitizeSkip}
                 <ChevronRight aria-hidden="true" />
               </button>
             </div>
+            <p className="digitize-notice">{vkCopy.digitizeNotice}</p>
             <BackButton onClick={goBack} />
           </section>
         )}

@@ -11,28 +11,30 @@ export type MaxMission =
   | 'business-promotion'
 
 export type VkTheme =
-  | 'Сериалы и кино'
-  | 'Юмор и стендап'
-  | 'Шоу и реалити'
+  | 'Кино'
+  | 'Медиа и шоу'
+  | 'Наука'
+  | 'Культура и образование'
+  | 'Игры и авто'
   | 'Спорт'
-  | 'Смотрим всей семьёй'
-  | 'Наука и технологии'
-  | 'Подкасты и интервью'
-  | 'Музыка и концерты'
-  | 'Путешествия и еда'
-  | 'Лайфстайл и саморазвитие'
+  | 'Новости и бизнес'
+  | 'Музыка'
 
-export interface WeightedOption {
-  id: string
+export interface AnswerOption<T extends string = string> {
+  id: T
   label: string
+  metadata: string[]
+}
+
+export interface WeightedOption extends AnswerOption {
   plusTwo: VkTheme
   plusOne: VkTheme
 }
 
-export interface VkQuestion {
+export interface VkQuestion<T extends AnswerOption = AnswerOption> {
   id: string
   prompt: string
-  options: WeightedOption[]
+  options: T[]
 }
 
 export interface ThemeScore {
