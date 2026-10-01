@@ -99,7 +99,8 @@ export function Prototype() {
   }, [screen])
 
   useEffect(() => {
-    if (termsOpen) termsCloseRef.current?.focus()
+    // Focusing a control in the sliding sheet must not scroll the scaled canvas.
+    if (termsOpen) termsCloseRef.current?.focus({ preventScroll: true })
   }, [termsOpen])
 
   useEffect(() => {
@@ -118,7 +119,7 @@ export function Prototype() {
     const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220
     termsCloseTimeoutRef.current = window.setTimeout(() => {
       setTermsMounted(false)
-      window.requestAnimationFrame(() => termsTriggerRef.current?.focus())
+      window.requestAnimationFrame(() => termsTriggerRef.current?.focus({ preventScroll: true }))
       termsCloseTimeoutRef.current = null
     }, duration)
   }
