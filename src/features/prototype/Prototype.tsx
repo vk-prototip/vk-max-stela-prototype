@@ -3,6 +3,7 @@ import {
   ChevronRight,
   Play,
   UserRound,
+  X,
 } from 'lucide-react'
 import homePointer from '../../assets/images/home/pointer.png'
 import maxChatImage from '../../assets/images/results/max-chat.png'
@@ -50,9 +51,12 @@ const canvasHeight = 1920
 
 export function Prototype() {
   const [screen, setScreen] = useState<ScreenState>(homeState)
+  const [termsOpen, setTermsOpen] = useState(false)
   const [canvasScale, setCanvasScale] = useState(1)
   const viewportRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLImageElement>(null)
+  const termsTriggerRef = useRef<HTMLButtonElement>(null)
+  const termsCloseRef = useRef<HTMLButtonElement>(null)
   const [sink] = useState(createBrowserEventSink)
   const [publisher, setPublisher] = useState(() => createEventPublisher(crypto.randomUUID(), sink))
 
@@ -92,7 +96,17 @@ export function Prototype() {
     return () => window.clearTimeout(timeout)
   }, [screen])
 
+  useEffect(() => {
+    if (termsOpen) termsCloseRef.current?.focus()
+  }, [termsOpen])
+
+  const closeTerms = () => {
+    setTermsOpen(false)
+    window.requestAnimationFrame(() => termsTriggerRef.current?.focus())
+  }
+
   const reset = () => {
+    setTermsOpen(false)
     setPublisher(createEventPublisher(crypto.randomUUID(), sink))
     setScreen(homeState)
   }
@@ -327,7 +341,7 @@ export function Prototype() {
         )}
 
         {screen.type === 'vk-digitize' && (
-          <section className="screen screen--digitize" aria-labelledby="digitize-title">
+          <section className="screen screen--digitize" aria-labelledby="digitize-title" inert={termsOpen}>
             <ProductMark product="vk-video" />
             <div className="digitize-symbol" aria-hidden="true">
               <UserRound />
@@ -351,9 +365,84 @@ export function Prototype() {
                 <ChevronRight aria-hidden="true" />
               </button>
             </div>
-            <p className="digitize-notice">{vkCopy.digitizeNotice}</p>
+            <p className="digitize-notice">
+              {vkCopy.digitizeNoticePrefix}
+              <button
+                ref={termsTriggerRef}
+                className="digitize-terms-link"
+                type="button"
+                aria-haspopup="dialog"
+                aria-expanded={termsOpen}
+                onClick={() => setTermsOpen(true)}
+              >
+                {vkCopy.digitizeNoticeAction}
+              </button>
+              .
+            </p>
             <BackButton onClick={goBack} />
           </section>
+        )}
+
+        {screen.type === 'vk-digitize' && termsOpen && (
+          <div
+            className="terms-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="terms-title"
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') closeTerms()
+              if (event.key === 'Tab') event.preventDefault()
+            }}
+          >
+            <div className="terms-panel">
+              <button
+                ref={termsCloseRef}
+                className="terms-close"
+                type="button"
+                aria-label="Закрыть"
+                title="Закрыть"
+                onClick={closeTerms}
+              >
+                <X aria-hidden="true" />
+              </button>
+              <h2 id="terms-title">{vkCopy.digitizeTermsTitle}</h2>
+              <p className="terms-draft-label">Демонстрационный макет</p>
+              <div className="terms-document">
+                <section>
+                  <h3>1. Общие положения</h3>
+                  <p>{vkCopy.digitizeTermsPlaceholder}</p>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                </section>
+                <section>
+                  <h3>2. Какие данные используются</h3>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                  <ul>
+                    <li>{vkCopy.digitizeTermsPlaceholder}</li>
+                    <li>{vkCopy.digitizeTermsPlaceholder}</li>
+                    <li>{vkCopy.digitizeTermsPlaceholder}</li>
+                  </ul>
+                </section>
+                <section>
+                  <h3>3. Цели и порядок использования</h3>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                </section>
+                <section>
+                  <h3>4. Хранение и защита данных</h3>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                  <ul>
+                    <li>{vkCopy.digitizeTermsPlaceholder}</li>
+                    <li>{vkCopy.digitizeTermsPlaceholder}</li>
+                  </ul>
+                </section>
+                <section>
+                  <h3>5. Права пользователя</h3>
+                  <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
+                  <p>{vkCopy.digitizeTermsPlaceholder}</p>
+                </section>
+              </div>
+            </div>
+          </div>
         )}
 
         {screen.type === 'vk-scanning' && (

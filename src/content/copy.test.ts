@@ -16,6 +16,7 @@ describe('approved September 29 copy', () => {
 
   it('uses the new three-question VK script and conditional photo step', () => {
     expect(vkCopy.digitizeQuestion).toBe('Сделаем фото?')
+    expect(`${vkCopy.digitizeNoticePrefix}${vkCopy.digitizeNoticeAction}.`).toBe('Отвечая “Да, давайте” вы принимаете условия использования персональных данных.')
     expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4])
     expect(vkQuestions[0].prompt).toBe('У вас внезапно освободился вечер. Что включаем?')
     expect(vkQuestions[1].options[0].label).toBe('чтобы был драйв и азарт')

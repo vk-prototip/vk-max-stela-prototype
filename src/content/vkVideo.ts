@@ -7,7 +7,12 @@ export const vkCopy = {
   digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
-  digitizeNotice: 'Отвечая “Да, давайте” вы принимаете условия использованием персональных данных.',
+  // user-approved: original wording with the requested typo correction.
+  digitizeNoticePrefix: 'Отвечая “Да, давайте” вы принимаете ',
+  digitizeNoticeAction: 'условия использования персональных данных',
+  digitizeTermsTitle: 'Условия использования персональных данных',
+  // Demonstration filler requested by the user; not legal terms.
+  digitizeTermsPlaceholder: 'здесь будут условия использования персональных данных.',
   // working-draft: short screen heading for the user's requested M/Ж choice.
   genderPrompt: 'Укажи пол',
   finalTitle: 'Мы уже подобрали контент, который совпадает с тобой настолько, что ты почти становишься его главным героем.',
