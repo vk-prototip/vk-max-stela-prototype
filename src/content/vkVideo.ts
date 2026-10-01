@@ -1,7 +1,7 @@
 import type { AnswerOption, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
 
 // client-verbatim: Google Doc "VK Видео_Стелла", scenario and recommendation rules.
-// Metadata and score weights: Google Sheets "Метаданные_VK_Видео_и_MAX".
+// Metadata and score weights: Google Sheets "Метаданные_VK_Видео_и_MAX"; photo skip is overridden by direct user instruction.
 export const vkCopy = {
   digitizeQuestion: 'Сделаем фото?',
   digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
@@ -60,7 +60,7 @@ export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption
 
 export const vkPhotoOptions: Array<AnswerOption<'accept' | 'skip'>> = [
   { id: 'accept', label: vkCopy.digitizeAccept, metadata: ['ракурс', 'освещение', 'композиция', 'обработка'] },
-  { id: 'skip', label: vkCopy.digitizeSkip, metadata: ['универсальное'] },
+  { id: 'skip', label: vkCopy.digitizeSkip, metadata: [] },
 ]
 
 export const discoveryRules: Record<string, string> = {

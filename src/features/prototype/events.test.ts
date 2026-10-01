@@ -5,7 +5,7 @@ import { calculateThemeScores, rankThemes } from './logic'
 import { createEventPublisher, type StelaEvent } from './events'
 
 describe('answer event contract', () => {
-  it('emits the exact table tags for every MAX and VK answer', () => {
+  it('emits answer tags, except the explicitly removed photo-skip tag', () => {
     const events: StelaEvent[] = []
     const publisher = createEventPublisher('session-1', { send: event => events.push(event) })
     publisher.start('max')
@@ -18,10 +18,10 @@ describe('answer event contract', () => {
 
     const answers = events.filter(event => event.type === 'answer')
     expect(answers).toHaveLength(19)
-    expect(answers.every(event => event.metadata.length > 0)).toBe(true)
+    expect(answers.filter(event => event.answerId !== 'skip').every(event => event.metadata.length > 0)).toBe(true)
     expect(answers.map(event => event.sequence)).toEqual(Array.from({ length: 19 }, (_, index) => index + 2))
     expect(answers.find(event => event.answerId === 'learn')?.metadata).toEqual(['культура', 'обучение', 'культура', 'факты'])
-    expect(answers.find(event => event.answerId === 'skip')?.metadata).toEqual(['универсальное'])
+    expect(answers.find(event => event.answerId === 'skip')?.metadata).toEqual([])
     expect(answers.find(event => event.answerId === 'business')?.metadata).toEqual(maxAudienceOptions[0].metadata)
   })
 
