@@ -8,7 +8,7 @@ export const vkCopy = {
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
   // user-approved: original wording with the requested typo correction.
-  digitizeNoticePrefix: 'Отвечая “Да, давайте” вы принимаете ',
+  digitizeNoticePrefix: 'Отвечая «Да, давайте», вы принимаете ',
   digitizeNoticeAction: 'условия использования персональных данных',
   digitizeTermsTitle: 'Условия использования персональных данных',
   // Demonstration filler requested by the user; not legal terms.
@@ -35,7 +35,7 @@ export const vkThemes: VkTheme[] = [
 export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption>, VkQuestion] = [
   {
     id: 'evening',
-    prompt: 'У вас внезапно освободился вечер. Что включаем?',
+    prompt: 'У тебя внезапно освободился вечер. Что включаем?',
     options: [
       { id: 'series', label: 'новый сериал, который все обсуждают', metadata: ['обсуждения', 'сериал', 'премьера', 'популярное'], plusTwo: 'Кино', plusOne: 'Музыка' },
       { id: 'standup', label: 'стендап или что-нибудь смешное', metadata: ['шоу', 'стендап', 'юмор', 'комедия'], plusTwo: 'Медиа и шоу', plusOne: 'Игры и авто' },
@@ -55,12 +55,12 @@ export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption
   },
   {
     id: 'discovery',
-    prompt: 'Рекомендации Discovery решили немного вас удивить. Что показывать?',
+    prompt: 'Рекомендации Discovery решили немного тебя удивить. Что показывать?',
     options: [
       { id: 'familiar', label: 'что-то похожее на то, что я уже люблю', metadata: ['рекомендации', 'для меня', 'персонализация', 'увлечения'] },
       { id: 'new', label: 'новое, но по теме моих интересов', metadata: ['новинки', 'лайки', 'интересы', 'темы'] },
       { id: 'hero', label: 'хочу стать героем VK Видео', metadata: ['образ', 'VK Видео', 'главный герой', 'роль'] },
-      { id: 'popular', label: 'то, чем прямо сейчас увлечены все.', metadata: ['тренды', 'яркое', 'все', 'топ-5'] },
+      { id: 'popular', label: 'то, чем прямо сейчас увлечены все', metadata: ['тренды', 'яркое', 'все', 'топ-5'] },
     ],
   },
 ]
