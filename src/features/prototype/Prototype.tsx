@@ -20,11 +20,12 @@ import {
   maxTransitionPrompt,
 } from '../../content/max'
 import { onboardingCopy } from '../../content/onboarding'
-import { discoveryRules, vkCopy, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
+import { discoveryRules, vkCopy, vkGenderOptions, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
 import type {
   MaxAudience,
   MaxGoal,
   MaxMission,
+  VkGender,
   VkTheme,
 } from '../../types/prototype'
 import { calculateThemeScores, getMaxMission, rankThemes } from './logic'
@@ -39,6 +40,7 @@ type ScreenState =
   | { type: 'max-result'; mission: MaxMission }
   | { type: 'vk-question'; index: number; answers: string[] }
   | { type: 'vk-digitize'; answers: string[]; rankedThemes: VkTheme[] }
+  | { type: 'vk-gender'; answers: string[]; rankedThemes: VkTheme[] }
   | { type: 'vk-scanning'; themes: VkTheme[] }
   | { type: 'vk-final'; themes: VkTheme[] }
 
@@ -131,6 +133,10 @@ export function Prototype() {
           answers: screen.answers,
         })
         break
+      case 'vk-gender':
+        publisher.clear('vk-video', 'photo')
+        setScreen({ type: 'vk-digitize', answers: screen.answers, rankedThemes: screen.rankedThemes })
+        break
       default:
         break
     }
@@ -165,10 +171,20 @@ export function Prototype() {
     if (screen.type !== 'vk-digitize') return
     const option = vkPhotoOptions.find(({ id }) => id === answerId)!
     publisher.answer('vk-video', 'photo', option)
-    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, answerId === 'accept' ? 'included' : 'skipped')
-    setScreen(answerId === 'accept'
-      ? { type: 'vk-scanning', themes: screen.rankedThemes.slice(0, 3) }
-      : { type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) })
+    if (answerId === 'accept') {
+      setScreen({ type: 'vk-gender', answers: screen.answers, rankedThemes: screen.rankedThemes })
+      return
+    }
+    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'skipped')
+    setScreen({ type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) })
+  }
+
+  const selectGender = (gender: VkGender) => {
+    if (screen.type !== 'vk-gender') return
+    const option = vkGenderOptions.find(({ id }) => id === gender)!
+    publisher.answer('vk-video', 'gender', option)
+    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'included', gender)
+    setScreen({ type: 'vk-scanning', themes: screen.rankedThemes.slice(0, 3) })
   }
 
   const backgroundVariant = screen.type === 'home'
@@ -350,6 +366,29 @@ export function Prototype() {
               <span className="scan-figure__line" />
             </div>
             <ProductMark product="vk-video" />
+          </section>
+        )}
+
+        {screen.type === 'vk-gender' && (
+          <section className="screen screen--gender" aria-labelledby="gender-title">
+            <ProductMark product="vk-video" />
+            <div className="gender-panel">
+              <h1 id="gender-title">{vkCopy.genderPrompt}</h1>
+              <div className="gender-options">
+                {vkGenderOptions.map((option) => (
+                  <button
+                    className="gender-option"
+                    type="button"
+                    key={option.id}
+                    aria-label={option.id === 'male' ? 'Мужской' : 'Женский'}
+                    onClick={() => selectGender(option.id)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <BackButton onClick={goBack} />
           </section>
         )}
 

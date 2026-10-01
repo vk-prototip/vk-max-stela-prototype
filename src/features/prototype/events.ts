@@ -1,4 +1,4 @@
-import type { AnswerOption, Product, ThemeScore, VkTheme } from '../../types/prototype'
+import type { AnswerOption, Product, ThemeScore, VkGender, VkTheme } from '../../types/prototype'
 
 export const eventName = 'vk-stela:event'
 export const channelName = 'vk-stela'
@@ -14,7 +14,7 @@ type EventData =
   | { type: 'session-start'; product: Product }
   | { type: 'answer'; product: Product; questionId: string; answerId: string; answerLabel: string; metadata: string[]; themeDelta?: Partial<Record<VkTheme, number>> }
   | { type: 'answer-cleared'; product: Product; questionId: string }
-  | { type: 'vk-recommendation'; product: 'vk-video'; scores: ThemeScore[]; rankedThemes: VkTheme[]; selectedThemes: VkTheme[]; discoveryAnswerId: string; discoveryRule: string; photoMode: 'included' | 'skipped' | 'not-requested' }
+  | { type: 'vk-recommendation'; product: 'vk-video'; scores: ThemeScore[]; rankedThemes: VkTheme[]; selectedThemes: VkTheme[]; discoveryAnswerId: string; discoveryRule: string; photoMode: 'included' | 'skipped' | 'not-requested'; gender?: VkGender }
 
 export type StelaEvent = EventBase & EventData
 
@@ -62,11 +62,12 @@ export function createEventPublisher(sessionId: string, sink: EventSink) {
     clear(product: Product, questionId: string) {
       return send({ type: 'answer-cleared', product, questionId })
     },
-    recommendation(scores: ThemeScore[], rankedThemes: VkTheme[], discoveryAnswerId: string, discoveryRule: string, photoMode: 'included' | 'skipped' | 'not-requested') {
+    recommendation(scores: ThemeScore[], rankedThemes: VkTheme[], discoveryAnswerId: string, discoveryRule: string, photoMode: 'included' | 'skipped' | 'not-requested', gender?: VkGender) {
       return send({
         type: 'vk-recommendation', product: 'vk-video', scores,
         rankedThemes, selectedThemes: rankedThemes.slice(0, 3),
         discoveryAnswerId, discoveryRule, photoMode,
+        ...(gender ? { gender } : {}),
       })
     },
   }

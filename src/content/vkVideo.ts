@@ -1,4 +1,4 @@
-import type { AnswerOption, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
+import type { AnswerOption, VkGender, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
 
 // client-verbatim: Google Doc "VK Видео_Стелла", scenario and recommendation rules.
 // Metadata and score weights: Google Sheets "Метаданные_VK_Видео_и_MAX"; photo skip is overridden by direct user instruction.
@@ -8,6 +8,8 @@ export const vkCopy = {
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
   digitizeNotice: 'Отвечая “Да, давайте” вы принимаете условия использованием персональных данных.',
+  // working-draft: short screen heading for the user's requested M/Ж choice.
+  genderPrompt: 'Укажи пол',
   finalTitle: 'Мы уже подобрали контент, который совпадает с тобой настолько, что ты почти становишься его главным героем.',
   finalDirection: 'Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.',
   // user-approved in the earlier direct request; the new document does not specify this control.
@@ -61,6 +63,11 @@ export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption
 export const vkPhotoOptions: Array<AnswerOption<'accept' | 'skip'>> = [
   { id: 'accept', label: vkCopy.digitizeAccept, metadata: ['ракурс', 'освещение', 'композиция', 'обработка'] },
   { id: 'skip', label: vkCopy.digitizeSkip, metadata: [] },
+]
+
+export const vkGenderOptions: Array<AnswerOption<VkGender>> = [
+  { id: 'male', label: 'М', metadata: [] },
+  { id: 'female', label: 'Ж', metadata: [] },
 ]
 
 export const discoveryRules: Record<string, string> = {

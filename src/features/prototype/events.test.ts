@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { maxAudienceOptions, maxGoalOptions } from '../../content/max'
-import { discoveryRules, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
+import { discoveryRules, vkGenderOptions, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
 import { calculateThemeScores, rankThemes } from './logic'
 import { createEventPublisher, type StelaEvent } from './events'
 
@@ -15,14 +15,27 @@ describe('answer event contract', () => {
       for (const option of question.options) publisher.answer('vk-video', question.id, option)
     }
     for (const option of vkPhotoOptions) publisher.answer('vk-video', 'photo', option)
+    for (const option of vkGenderOptions) publisher.answer('vk-video', 'gender', option)
 
     const answers = events.filter(event => event.type === 'answer')
-    expect(answers).toHaveLength(19)
-    expect(answers.filter(event => event.answerId !== 'skip').every(event => event.metadata.length > 0)).toBe(true)
-    expect(answers.map(event => event.sequence)).toEqual(Array.from({ length: 19 }, (_, index) => index + 2))
+    expect(answers).toHaveLength(21)
+    expect(answers.filter(event => !['skip', 'male', 'female'].includes(event.answerId)).every(event => event.metadata.length > 0)).toBe(true)
+    expect(answers.map(event => event.sequence)).toEqual(Array.from({ length: 21 }, (_, index) => index + 2))
     expect(answers.find(event => event.answerId === 'learn')?.metadata).toEqual(['культура', 'обучение', 'культура', 'факты'])
     expect(answers.find(event => event.answerId === 'skip')?.metadata).toEqual([])
+    expect(answers.find(event => event.answerId === 'male')?.metadata).toEqual([])
+    expect(answers.find(event => event.answerId === 'female')?.metadata).toEqual([])
     expect(answers.find(event => event.answerId === 'business')?.metadata).toEqual(maxAudienceOptions[0].metadata)
+  })
+
+  it('passes the selected gender with a photo recommendation and no invented tags', () => {
+    const events: StelaEvent[] = []
+    const publisher = createEventPublisher('session-photo', { send: event => events.push(event) })
+    publisher.answer('vk-video', 'photo', vkPhotoOptions[0])
+    publisher.answer('vk-video', 'gender', vkGenderOptions[1])
+    publisher.recommendation(calculateThemeScores(['series', 'drive']), rankThemes(['series', 'drive'], () => 0), 'hero', discoveryRules.hero, 'included', 'female')
+    expect(events[1]).toMatchObject({ type: 'answer', questionId: 'gender', answerId: 'female', metadata: [] })
+    expect(events[2]).toMatchObject({ type: 'vk-recommendation', photoMode: 'included', gender: 'female' })
   })
 
   it('sends score deltas and a separate recommendation snapshot', () => {

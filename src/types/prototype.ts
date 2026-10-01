@@ -20,6 +20,8 @@ export type VkTheme =
   | 'Новости и бизнес'
   | 'Музыка'
 
+export type VkGender = 'male' | 'female'
+
 export interface AnswerOption<T extends string = string> {
   id: T
   label: string
