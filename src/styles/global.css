@@ -543,72 +543,122 @@ button {
 }
 
 .digitize-notice {
+  position: relative;
+  display: block;
+  width: 780px;
   max-width: 780px;
   margin: 24px 0 0;
+  padding: 0;
+  border: 0;
   color: #dcecff;
+  background: none;
   font-family: 'VK Sans Text', Arial, sans-serif;
   font-size: 26px;
   line-height: 1.3;
-}
-
-.digitize-terms-link {
-  display: inline;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  color: #a8edff;
-  background: none;
-  font: inherit;
-  line-height: inherit;
+  text-align: center;
   cursor: pointer;
 }
 
-.digitize-terms-link:hover,
-.digitize-terms-link:focus-visible {
+.digitize-notice::before {
+  position: absolute;
+  inset: -10px 0 -70px;
+  content: '';
+}
+
+.digitize-terms-link {
+  border-bottom: 1px solid currentColor;
+  color: #a8edff;
+}
+
+.digitize-notice:hover .digitize-terms-link,
+.digitize-notice:focus-visible .digitize-terms-link {
   color: #fff;
-  outline: none;
   border-bottom-width: 2px;
+}
+
+.digitize-notice:focus-visible {
+  outline: 2px solid #a8edff;
+  outline-offset: 8px;
 }
 
 .terms-overlay {
   position: absolute;
   inset: 0;
   z-index: 20;
-  display: grid;
-  padding: 128px 88px;
-  background: rgb(0 5 24 / 86%);
-  place-items: center;
+  background: rgb(0 5 24 / 0%);
+  transition: background-color 260ms ease;
+}
+
+.terms-overlay[data-open='true'] {
+  background: rgb(0 5 24 / 36%);
+}
+
+.terms-overlay[data-open='false'] {
+  transition-duration: 210ms;
 }
 
 .terms-panel {
-  position: relative;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
   width: 100%;
-  max-height: 100%;
-  overflow-y: auto;
-  padding: 104px 68px 88px;
-  border: 2px solid rgb(114 202 255 / 48%);
-  border-radius: 8px;
-  background: #071936;
-  box-shadow: 0 28px 100px rgb(0 0 0 / 42%);
+  height: 1040px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #d4def4;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  color: #172b58;
+  background: #f5f8ff;
+  box-shadow: 0 -28px 90px rgb(0 5 24 / 36%);
+  transform: translateY(100%);
+  transition: transform 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.terms-overlay[data-open='true'] .terms-panel {
+  transform: translateY(0);
+}
+
+.terms-overlay[data-open='false'] .terms-panel {
+  transition-duration: 210ms;
+}
+
+.terms-header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 56px 64px 40px;
+  border-bottom: 1px solid #dce5f5;
 }
 
 .terms-panel h2 {
-  max-width: 690px;
+  max-width: 720px;
   margin: 0;
   font-family: 'VK Sans Display', Arial, sans-serif;
-  font-size: 60px;
+  font-size: 54px;
   font-weight: 600;
   line-height: 1.13;
 }
 
+.terms-body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 64px 72px;
+  overscroll-behavior: contain;
+}
+
 .terms-panel .terms-draft-label {
-  margin: 28px 0 0;
-  color: #a8edff;
+  margin: 36px 0 0;
+  color: #526690;
   font-size: 26px;
 }
 
 .terms-document {
-  margin-top: 64px;
+  margin-top: 40px;
 }
 
 .terms-document section + section {
@@ -627,7 +677,7 @@ button {
 .terms-document li {
   margin: 0 0 24px;
   font-family: 'VK Sans Text', Arial, sans-serif;
-  font-size: 30px;
+  font-size: 34px;
   line-height: 1.45;
 }
 
@@ -637,33 +687,36 @@ button {
 }
 
 .terms-close {
-  position: sticky;
-  top: 28px;
-  float: right;
-  margin-top: -76px;
-  margin-right: -40px;
   display: grid;
-  width: 72px;
-  height: 72px;
+  width: 120px;
+  height: 120px;
+  flex: none;
   padding: 0;
-  border: 1px solid rgb(255 255 255 / 36%);
+  border: 1px solid #cbd7ef;
   border-radius: 6px;
-  color: #fff;
-  background: rgb(255 255 255 / 8%);
+  color: #172b58;
+  background: #e8eefb;
   cursor: pointer;
   place-items: center;
 }
 
 .terms-close:hover,
 .terms-close:focus-visible {
-  border-color: #a8edff;
+  border-color: #416dcb;
   outline: none;
-  background: rgb(255 255 255 / 18%);
+  background: #dce7ff;
 }
 
 .terms-close svg {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terms-overlay,
+  .terms-panel {
+    transition-duration: 0ms;
+  }
 }
 
 .screen--gender .product-mark {

@@ -52,11 +52,13 @@ const canvasHeight = 1920
 export function Prototype() {
   const [screen, setScreen] = useState<ScreenState>(homeState)
   const [termsOpen, setTermsOpen] = useState(false)
+  const [termsMounted, setTermsMounted] = useState(false)
   const [canvasScale, setCanvasScale] = useState(1)
   const viewportRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLImageElement>(null)
   const termsTriggerRef = useRef<HTMLButtonElement>(null)
   const termsCloseRef = useRef<HTMLButtonElement>(null)
+  const termsCloseTimeoutRef = useRef<number | null>(null)
   const [sink] = useState(createBrowserEventSink)
   const [publisher, setPublisher] = useState(() => createEventPublisher(crypto.randomUUID(), sink))
 
@@ -100,13 +102,31 @@ export function Prototype() {
     if (termsOpen) termsCloseRef.current?.focus()
   }, [termsOpen])
 
+  useEffect(() => {
+    if (!termsMounted) return
+    const frame = window.requestAnimationFrame(() => setTermsOpen(true))
+    return () => window.cancelAnimationFrame(frame)
+  }, [termsMounted])
+
+  useEffect(() => () => {
+    if (termsCloseTimeoutRef.current !== null) window.clearTimeout(termsCloseTimeoutRef.current)
+  }, [])
+
   const closeTerms = () => {
     setTermsOpen(false)
-    window.requestAnimationFrame(() => termsTriggerRef.current?.focus())
+    if (termsCloseTimeoutRef.current !== null) window.clearTimeout(termsCloseTimeoutRef.current)
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220
+    termsCloseTimeoutRef.current = window.setTimeout(() => {
+      setTermsMounted(false)
+      window.requestAnimationFrame(() => termsTriggerRef.current?.focus())
+      termsCloseTimeoutRef.current = null
+    }, duration)
   }
 
   const reset = () => {
+    if (termsCloseTimeoutRef.current !== null) window.clearTimeout(termsCloseTimeoutRef.current)
     setTermsOpen(false)
+    setTermsMounted(false)
     setPublisher(createEventPublisher(crypto.randomUUID(), sink))
     setScreen(homeState)
   }
@@ -341,7 +361,7 @@ export function Prototype() {
         )}
 
         {screen.type === 'vk-digitize' && (
-          <section className="screen screen--digitize" aria-labelledby="digitize-title" inert={termsOpen}>
+          <section className="screen screen--digitize" aria-labelledby="digitize-title" inert={termsMounted}>
             <ProductMark product="vk-video" />
             <div className="digitize-symbol" aria-hidden="true">
               <UserRound />
@@ -365,49 +385,54 @@ export function Prototype() {
                 <ChevronRight aria-hidden="true" />
               </button>
             </div>
-            <p className="digitize-notice">
+            <button
+              ref={termsTriggerRef}
+              className="digitize-notice"
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded={termsMounted}
+              onClick={() => setTermsMounted(true)}
+            >
               {vkCopy.digitizeNoticePrefix}
-              <button
-                ref={termsTriggerRef}
-                className="digitize-terms-link"
-                type="button"
-                aria-haspopup="dialog"
-                aria-expanded={termsOpen}
-                onClick={() => setTermsOpen(true)}
-              >
-                {vkCopy.digitizeNoticeAction}
-              </button>
+              <span className="digitize-terms-link">{vkCopy.digitizeNoticeAction}</span>
               .
-            </p>
+            </button>
             <BackButton onClick={goBack} />
           </section>
         )}
 
-        {screen.type === 'vk-digitize' && termsOpen && (
+        {screen.type === 'vk-digitize' && termsMounted && (
           <div
             className="terms-overlay"
+            data-open={termsOpen}
             role="dialog"
             aria-modal="true"
             aria-labelledby="terms-title"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) closeTerms()
+            }}
             onKeyDown={(event) => {
               if (event.key === 'Escape') closeTerms()
               if (event.key === 'Tab') event.preventDefault()
             }}
           >
             <div className="terms-panel">
-              <button
-                ref={termsCloseRef}
-                className="terms-close"
-                type="button"
-                aria-label="Закрыть"
-                title="Закрыть"
-                onClick={closeTerms}
-              >
-                <X aria-hidden="true" />
-              </button>
-              <h2 id="terms-title">{vkCopy.digitizeTermsTitle}</h2>
-              <p className="terms-draft-label">Демонстрационный макет</p>
-              <div className="terms-document">
+              <div className="terms-header">
+                <h2 id="terms-title">{vkCopy.digitizeTermsTitle}</h2>
+                <button
+                  ref={termsCloseRef}
+                  className="terms-close"
+                  type="button"
+                  aria-label="Закрыть"
+                  title="Закрыть"
+                  onClick={closeTerms}
+                >
+                  <X aria-hidden="true" />
+                </button>
+              </div>
+              <div className="terms-body">
+                <p className="terms-draft-label">Демонстрационный макет</p>
+                <div className="terms-document">
                 <section>
                   <h3>1. Общие положения</h3>
                   <p>{vkCopy.digitizeTermsPlaceholder}</p>
@@ -440,6 +465,7 @@ export function Prototype() {
                   <p>{vkCopy.digitizeTermsPlaceholder} {vkCopy.digitizeTermsPlaceholder}</p>
                   <p>{vkCopy.digitizeTermsPlaceholder}</p>
                 </section>
+                </div>
               </div>
             </div>
           </div>
