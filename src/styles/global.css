@@ -1652,6 +1652,29 @@ button {
   transition: filter 150ms ease;
 }
 
+.vk-final-qr {
+  position: absolute;
+  top: 1060px;
+  left: 360px;
+  width: 360px;
+  height: 360px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vk-final-qr img {
+  position: absolute;
+  top: -1060px;
+  left: -360px;
+  width: 1080px;
+  height: 1920px;
+  max-width: none;
+}
+
+.screen--vk-final .result-copy--after-qr {
+  top: 1484px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

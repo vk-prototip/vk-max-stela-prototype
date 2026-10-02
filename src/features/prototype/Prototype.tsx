@@ -11,6 +11,7 @@ import photoSkipImage from '../../assets/images/vk-flow/photo-skip.png'
 import cameraIcon from '../../assets/images/vk-flow/camera-icon.png'
 import scanSilhouette from '../../assets/images/vk-flow/scan-silhouette.png'
 import thanksImage from '../../assets/images/vk-flow/thanks.png'
+import finalQrReference from '../../assets/images/vk-flow/final-qr-reference.png'
 import discoverySymbol from '../../assets/images/vk-flow/discovery-symbol.png'
 import { OnboardingScreen } from '../../components/OnboardingScreen'
 import { ProductMark } from '../../components/ProductMark'
@@ -604,6 +605,10 @@ export function Prototype() {
             >
               <img src={thanksImage} alt="" />
             </button>
+            <div className="vk-final-qr" role="img" aria-label="QR-код VK Видео">
+              <img src={finalQrReference} alt="" />
+            </div>
+            <p className="result-copy result-copy--after-qr">{vkCopy.finalDirection}</p>
           </section>
         )}
           </div>
