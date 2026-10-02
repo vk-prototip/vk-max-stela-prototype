@@ -3,7 +3,7 @@ import type { Product } from '../types/prototype'
 // user-approved: Google Docs, «ТЕКСТ основной», refreshed 2026-09-29.
 // Spoken greeting is distinct from the on-screen introduction.
 export const onboardingCopy = {
-  homeQuestion: 'Что тебе сейчас ближе?',
+  homeQuestion: 'ЧТО ТЕБЕ\nСЕЙЧАС БЛИЖЕ?',
   spokenGreeting: 'Добро пожаловать в экосистему VK. Здесь лента подстраивается под тебя.',
   voice: 'Со мной можно говорить своими словами. Скажи, например, «поехали»',
   touch: 'или просто нажми',
@@ -23,10 +23,10 @@ export const onboardingIntroductions: Record<Product, {
     ],
   },
   'vk-video': {
-    title: 'Исследуй мир\nвместе с VK Видео!',
+    title: 'Исследуй мир\nвместе с VK Видео',
     steps: [
-      'Расскажи, какой контент ты любишь',
-      'Получи персональную подборку от\u00a0технологии\u00a0Discovery',
+      'Расскажи, какой\nконтент ты любишь',
+      'Получи персональную\nподборку от технологии\nDiscovery',
     ],
   },
 }

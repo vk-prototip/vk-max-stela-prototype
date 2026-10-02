@@ -1,16 +1,20 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
-  ChevronRight,
-  Play,
-  UserRound,
   X,
 } from 'lucide-react'
 import homePointer from '../../assets/images/home/pointer.png'
+import firstScreenMax from '../../assets/images/home/first-screen/max.png'
+import firstScreenVkVideo from '../../assets/images/home/first-screen/vk-video.png'
 import maxChatImage from '../../assets/images/results/max-chat.png'
-import { BackButton } from '../../components/BackButton'
+import photoAcceptImage from '../../assets/images/vk-flow/photo-accept.png'
+import photoSkipImage from '../../assets/images/vk-flow/photo-skip.png'
+import cameraIcon from '../../assets/images/vk-flow/camera-icon.png'
+import scanSilhouette from '../../assets/images/vk-flow/scan-silhouette.png'
+import thanksImage from '../../assets/images/vk-flow/thanks.png'
 import { OnboardingScreen } from '../../components/OnboardingScreen'
 import { ProductMark } from '../../components/ProductMark'
 import { QuestionScreen } from '../../components/QuestionScreen'
+import { VkAnswerReveal, VkFlowBack, VkFlowLogo, VkFlowQuestion, VkPhotoReveal } from '../../components/VkFlowScreen'
 import {
   maxAudienceOptions,
   maxChooseAnotherMission,
@@ -40,8 +44,11 @@ type ScreenState =
   | { type: 'max-goal'; audience: MaxAudience }
   | { type: 'max-result'; mission: MaxMission }
   | { type: 'vk-question'; index: number; answers: string[] }
+  | { type: 'vk-answer-reveal'; questionIndex: number; optionIndex: number; label: string; metadata: string[]; next: ScreenState }
+  | { type: 'vk-photo-reveal'; answerId: 'accept' | 'skip'; metadata: string[]; next: ScreenState }
   | { type: 'vk-digitize'; answers: string[]; rankedThemes: VkTheme[] }
   | { type: 'vk-gender'; answers: string[]; rankedThemes: VkTheme[] }
+  | { type: 'vk-camera'; themes: VkTheme[] }
   | { type: 'vk-scanning'; themes: VkTheme[] }
   | { type: 'vk-final'; themes: VkTheme[] }
 
@@ -87,6 +94,24 @@ export function Prototype() {
       window.removeEventListener('resize', fitCanvas)
     }
   }, [])
+
+  useEffect(() => {
+    if (screen.type !== 'vk-answer-reveal' && screen.type !== 'vk-photo-reveal') return
+
+    const duration = screen.type === 'vk-photo-reveal' && screen.metadata.length === 0 ? 650 : 2300
+    const timeout = window.setTimeout(() => setScreen(screen.next), duration)
+    return () => window.clearTimeout(timeout)
+  }, [screen])
+
+  useEffect(() => {
+    if (screen.type !== 'vk-camera') return
+
+    const timeout = window.setTimeout(() => {
+      setScreen({ type: 'vk-scanning', themes: screen.themes })
+    }, 1800)
+
+    return () => window.clearTimeout(timeout)
+  }, [screen])
 
   useEffect(() => {
     if (screen.type !== 'vk-scanning') return
@@ -188,18 +213,33 @@ export function Prototype() {
       const weightedQuestion = screen.index === 0 ? vkQuestions[0] : vkQuestions[1]
       const weightedOption = weightedQuestion.options.find(({ id }) => id === answerId)!
       publisher.answer('vk-video', question.id, weightedOption, { [weightedOption.plusTwo]: 2, [weightedOption.plusOne]: 1 })
-      setScreen({ type: 'vk-question', index: screen.index + 1, answers: [...screen.answers, answerId] })
+      setScreen({
+        type: 'vk-answer-reveal',
+        questionIndex: screen.index,
+        optionIndex: question.options.findIndex(({ id }) => id === answerId),
+        label: option.label,
+        metadata: option.metadata,
+        next: { type: 'vk-question', index: screen.index + 1, answers: [...screen.answers, answerId] },
+      })
       return
     }
 
     publisher.answer('vk-video', question.id, option)
     const rankedThemes = rankThemes(screen.answers)
     if (answerId === 'hero') {
-      setScreen({ type: 'vk-digitize', answers: screen.answers, rankedThemes })
+      setScreen({
+        type: 'vk-answer-reveal', questionIndex: screen.index,
+        optionIndex: question.options.findIndex(({ id }) => id === answerId), label: option.label, metadata: option.metadata,
+        next: { type: 'vk-digitize', answers: screen.answers, rankedThemes },
+      })
       return
     }
     publisher.recommendation(calculateThemeScores(screen.answers), rankedThemes, answerId, discoveryRules[answerId], 'not-requested')
-    setScreen({ type: 'vk-final', themes: rankedThemes.slice(0, 3) })
+    setScreen({
+      type: 'vk-answer-reveal', questionIndex: screen.index,
+      optionIndex: question.options.findIndex(({ id }) => id === answerId), label: option.label, metadata: option.metadata,
+      next: { type: 'vk-final', themes: rankedThemes.slice(0, 3) },
+    })
   }
 
   const selectPhoto = (answerId: 'accept' | 'skip') => {
@@ -207,11 +247,17 @@ export function Prototype() {
     const option = vkPhotoOptions.find(({ id }) => id === answerId)!
     publisher.answer('vk-video', 'photo', option)
     if (answerId === 'accept') {
-      setScreen({ type: 'vk-gender', answers: screen.answers, rankedThemes: screen.rankedThemes })
+      setScreen({
+        type: 'vk-photo-reveal', answerId, metadata: option.metadata,
+        next: { type: 'vk-gender', answers: screen.answers, rankedThemes: screen.rankedThemes },
+      })
       return
     }
     publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'skipped')
-    setScreen({ type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) })
+    setScreen({
+      type: 'vk-photo-reveal', answerId, metadata: option.metadata,
+      next: { type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) },
+    })
   }
 
   const selectGender = (gender: VkGender) => {
@@ -219,14 +265,16 @@ export function Prototype() {
     const option = vkGenderOptions.find(({ id }) => id === gender)!
     publisher.answer('vk-video', 'gender', option)
     publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'included', gender)
-    setScreen({ type: 'vk-scanning', themes: screen.rankedThemes.slice(0, 3) })
+    setScreen({ type: 'vk-camera', themes: screen.rankedThemes.slice(0, 3) })
   }
 
   const backgroundVariant = screen.type === 'home'
     ? 'home'
     : screen.type.startsWith('max-')
       ? 'max'
-      : 'vk'
+      : screen.type === 'vk-onboarding'
+        ? 'vk-onboarding'
+        : 'vk'
 
   return (
     <div
@@ -263,7 +311,7 @@ export function Prototype() {
                 aria-label="VK Видео"
                 onClick={() => startProduct('vk-video')}
               >
-                <ProductMark product="vk-video" />
+                <img src={firstScreenVkVideo} alt="" draggable={false} />
               </button>
               <button
                 className="product-choice product-choice--max"
@@ -271,7 +319,7 @@ export function Prototype() {
                 aria-label="MAX"
                 onClick={() => startProduct('max')}
               >
-                <ProductMark product="max" />
+                <img src={firstScreenMax} alt="" draggable={false} />
               </button>
             </div>
           </section>
@@ -352,38 +400,43 @@ export function Prototype() {
         )}
 
         {screen.type === 'vk-question' && (
-          <QuestionScreen
-            product="vk-video"
-            prompt={vkQuestions[screen.index].prompt}
-            options={vkQuestions[screen.index].options}
-            onSelect={selectVkAnswer}
-            onBack={goBack}
+          <VkFlowQuestion index={screen.index} onSelect={selectVkAnswer} onBack={goBack} />
+        )}
+
+        {screen.type === 'vk-answer-reveal' && (
+          <VkAnswerReveal
+            questionIndex={screen.questionIndex}
+            optionIndex={screen.optionIndex}
+            label={screen.label}
+            metadata={screen.metadata}
           />
+        )}
+
+        {screen.type === 'vk-photo-reveal' && (
+          <VkPhotoReveal answerId={screen.answerId} metadata={screen.metadata} />
         )}
 
         {screen.type === 'vk-digitize' && (
           <section className="screen screen--digitize" aria-labelledby="digitize-title" inert={termsMounted}>
-            <ProductMark product="vk-video" />
-            <div className="digitize-symbol" aria-hidden="true">
-              <UserRound />
-            </div>
+            <VkFlowLogo />
             <h1 id="digitize-title">{vkCopy.digitizeQuestion}</h1>
             <p className="digitize-description">{vkCopy.digitizeDescription}</p>
             <div className="digitize-actions">
               <button
-                className="primary-button"
+                className="vk-photo-button vk-photo-button--accept"
                 type="button"
+                aria-label={vkCopy.digitizeAccept}
                 onClick={() => selectPhoto('accept')}
               >
-                {vkCopy.digitizeAccept}
+                <img src={photoAcceptImage} alt="" />
               </button>
               <button
-                className="secondary-button"
+                className="vk-photo-button vk-photo-button--skip"
                 type="button"
+                aria-label={vkCopy.digitizeSkip}
                 onClick={() => selectPhoto('skip')}
               >
-                {vkCopy.digitizeSkip}
-                <ChevronRight aria-hidden="true" />
+                <img src={photoSkipImage} alt="" />
               </button>
             </div>
             <button
@@ -398,7 +451,6 @@ export function Prototype() {
               <span className="digitize-terms-link">{vkCopy.digitizeNoticeAction}</span>
               .
             </button>
-            <BackButton onClick={goBack} />
           </section>
         )}
 
@@ -472,22 +524,26 @@ export function Prototype() {
           </div>
         )}
 
+        {screen.type === 'vk-camera' && (
+          <section className="screen screen--vk-camera" aria-label="Подготовка к фото">
+            <VkFlowLogo />
+            <h1>Смотри в камеру выше!</h1>
+            <img className="vk-camera-icon" src={cameraIcon} alt="" />
+          </section>
+        )}
+
         {screen.type === 'vk-scanning' && (
           <section
             className="screen screen--scanning"
             aria-label="Имитация оцифровки"
           >
-            <div className="scan-figure" aria-hidden="true">
-              <UserRound />
-              <span className="scan-figure__line" />
-            </div>
-            <ProductMark product="vk-video" />
+            <img className="vk-scan-silhouette" src={scanSilhouette} alt="" />
           </section>
         )}
 
         {screen.type === 'vk-gender' && (
           <section className="screen screen--gender" aria-labelledby="gender-title">
-            <ProductMark product="vk-video" />
+            <VkFlowLogo />
             <div className="gender-panel">
               <h1 id="gender-title">{vkCopy.genderPrompt}</h1>
               <div className="gender-options">
@@ -504,24 +560,22 @@ export function Prototype() {
                 ))}
               </div>
             </div>
-            <BackButton onClick={goBack} />
+            <VkFlowBack onClick={goBack} />
           </section>
         )}
 
         {screen.type === 'vk-final' && (
-          <section className="screen screen--result" aria-labelledby="vk-result-title">
-            <ProductMark product="vk-video" />
-            <div className="result-orbit result-orbit--video" aria-hidden="true">
-              <Play />
-            </div>
+          <section className="screen screen--vk-final" aria-labelledby="vk-result-title">
+            <VkFlowLogo />
             <h1 id="vk-result-title">{vkCopy.finalTitle}</h1>
             <p className="result-copy">{vkCopy.finalDirection}</p>
             <button
-              className="primary-button result-reset result-thanks"
+              className="vk-final-thanks"
               type="button"
+              aria-label={vkCopy.thanks}
               onClick={reset}
             >
-              {vkCopy.thanks}
+              <img src={thanksImage} alt="" />
             </button>
           </section>
         )}

@@ -25,4 +25,11 @@ describe('onboarding presentation', () => {
     expect(html).not.toContain('speech-error')
     expect(html).not.toContain('Включить озвучку')
   })
+
+  it('keeps the VK Video onboarding start action without a back control', () => {
+    const html = renderToStaticMarkup(<OnboardingScreen product="vk-video" onStart={() => {}} onBack={() => {}} />)
+    expect(html).toContain('aria-label="Начать"')
+    expect(html).toContain('vk-onboarding-logo')
+    expect(html).not.toContain('aria-label="Назад"')
+  })
 })

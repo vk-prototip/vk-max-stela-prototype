@@ -4,7 +4,7 @@ import { preloadNextScreenImages } from './preloadImages'
 afterEach(() => vi.unstubAllGlobals())
 
 describe('next-screen images', () => {
-  it('warms both backgrounds and shared controls at low priority', () => {
+  it('warms branch backgrounds, first VK cards and shared controls at low priority', () => {
     const images: FakeImage[] = []
     class FakeImage {
       src = ''
@@ -14,8 +14,9 @@ describe('next-screen images', () => {
     }
     vi.stubGlobal('Image', FakeImage)
     preloadNextScreenImages()
-    expect(images).toHaveLength(5)
-    expect(images.filter(({ src }) => src.endsWith('.webp'))).toHaveLength(2)
+    expect(images).toHaveLength(10)
+    expect(images.filter(({ src }) => src.endsWith('.webp'))).toHaveLength(1)
+    expect(images.filter(({ src }) => src.endsWith('.png'))).toHaveLength(9)
     for (const image of images) {
       expect(image.fetchPriority).toBe('low')
       expect(image.decode).toHaveBeenCalledOnce()
