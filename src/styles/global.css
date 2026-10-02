@@ -420,6 +420,111 @@ button {
   flex-shrink: 0;
 }
 
+.screen--max-onboarding {
+  position: relative;
+  display: block;
+  padding: 0;
+  text-align: center;
+}
+
+.screen--max-onboarding .product-mark {
+  position: absolute;
+  top: 139.66px;
+  left: 50%;
+  height: 92px;
+  margin: 0;
+  transform: translateX(-50%);
+}
+
+.screen--max-onboarding .onboarding-intro,
+.screen--max-onboarding .onboarding-actions {
+  display: contents;
+}
+
+.screen--max-onboarding h1 {
+  position: absolute;
+  top: 340px;
+  left: 85.85px;
+  width: 908.09px;
+  max-width: none;
+  font-size: 75px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  text-wrap: nowrap;
+}
+
+.screen--max-onboarding .onboarding-steps {
+  position: absolute;
+  top: 520px;
+  left: 305px;
+  width: 650px;
+  grid-template-rows: repeat(3, 145px);
+  gap: 26px;
+  margin: 0;
+}
+
+.screen--max-onboarding .onboarding-step {
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.screen--max-onboarding .onboarding-step + .onboarding-step { border: 0; }
+
+.screen--max-onboarding .onboarding-step__label {
+  font-family: 'VK Sans Display', Arial, sans-serif;
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(90deg, #ffeff0, #d2e7ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.screen--max-onboarding .onboarding-step p {
+  font-family: 'VK Sans Display', Arial, sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: wrap;
+}
+
+.screen--max-onboarding .onboarding-voice,
+.screen--max-onboarding .onboarding-touch {
+  position: absolute;
+  left: 171.13px;
+  width: 737.74px;
+  max-width: none;
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.3;
+  text-align: center;
+  opacity: .72;
+}
+
+.screen--max-onboarding .onboarding-voice { top: 1090px; }
+.screen--max-onboarding .onboarding-touch { top: 1350px; }
+
+.screen--max-onboarding .onboarding-start {
+  position: absolute;
+  top: 1180px;
+  left: 367.5px;
+  width: 345px;
+  height: 140px;
+  min-height: 0;
+  padding: 0;
+}
+
+.screen--max-onboarding .back-button {
+  position: absolute;
+  top: 1450px;
+  left: 330px;
+  margin: 0;
+}
+
 .screen--vk-onboarding {
   position: relative;
   display: block;

@@ -39,14 +39,14 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
   }
 
   return (
-    <section className="screen screen--onboarding" aria-labelledby="onboarding-title">
+    <section className="screen screen--onboarding screen--max-onboarding" aria-labelledby="onboarding-title">
       <ProductMark product={product} />
       <div className="onboarding-intro">
         <h1 id="onboarding-title">{introduction.title}</h1>
         <ol className="onboarding-steps">
           {introduction.steps.map((step, index) => (
             <li className="onboarding-step" key={step}>
-              <span className="onboarding-step__label">Шаг {index + 1}.</span>
+              <span className="onboarding-step__label" aria-label={`Шаг ${index + 1}`}>{index + 1}</span>
               <p>{step}</p>
             </li>
           ))}
@@ -54,10 +54,10 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
       </div>
       <div className="onboarding-actions">
         <p className="onboarding-voice">{onboardingCopy.voice}</p>
-        <p className="onboarding-touch">{onboardingCopy.touch}</p>
         <button className="primary-button onboarding-start" type="button" onClick={onStart}>
           {onboardingCopy.start}
         </button>
+        <p className="onboarding-touch">{onboardingCopy.touch}</p>
       </div>
       <BackButton onClick={onBack} />
     </section>
