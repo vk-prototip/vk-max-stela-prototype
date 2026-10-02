@@ -47,7 +47,7 @@ export function VkFlowQuestion({ index, onSelect, onBack }: {
   const question = vkQuestions[index]
 
   return (
-    <section className="screen screen--vk-flow-question" aria-labelledby="vk-question-title">
+    <section className={`screen screen--vk-flow-question${index === 1 ? ' screen--vk-flow-question-2' : ''}`} aria-labelledby="vk-question-title">
       <VkFlowLogo />
       <h1 id="vk-question-title">{question.prompt}</h1>
       <div className="vk-flow-grid">
@@ -75,7 +75,7 @@ export function VkAnswerReveal({ questionIndex, optionIndex, label, metadata }: 
   metadata: string[]
 }) {
   return (
-    <section className="screen screen--vk-answer-reveal" aria-label="Метаданные ответа">
+    <section className={`screen screen--vk-answer-reveal${questionIndex === 1 ? ' screen--vk-answer-reveal-2' : ''}`} aria-label="Метаданные ответа">
       <VkFlowLogo />
       <div
         className={`vk-flow-card vk-flow-card--selected vk-flow-card--position-${optionIndex + 1}`}
