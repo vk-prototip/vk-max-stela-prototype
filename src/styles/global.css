@@ -1143,6 +1143,14 @@ button {
   background-size: 468px 280px;
 }
 
+.vk-flow-card.vk-flow-card--hero span {
+  bottom: 39px;
+  left: 46px;
+  max-width: 340px;
+  font-size: 34px;
+  line-height: 1.2;
+}
+
 .vk-flow-card span {
   position: absolute;
   right: 32px;

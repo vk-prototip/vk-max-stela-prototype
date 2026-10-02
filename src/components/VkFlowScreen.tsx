@@ -57,11 +57,10 @@ export function VkFlowQuestion({ index, onSelect, onBack }: {
             className={`vk-flow-card${index === 2 && optionIndex === 2 ? ' vk-flow-card--hero' : ''}`}
             type="button"
             key={option.id}
-            aria-label={index === 2 && optionIndex === 2 ? option.label : undefined}
             style={{ backgroundImage: `url(${cards[index][optionIndex]})` }}
             onClick={() => onSelect(option.id)}
           >
-            {index === 2 && optionIndex === 2 ? null : <span>{option.label[0].toUpperCase() + option.label.slice(1)}</span>}
+            <span>{option.label[0].toUpperCase() + option.label.slice(1)}</span>
           </button>
         ))}
       </div>
@@ -81,11 +80,9 @@ export function VkAnswerReveal({ questionIndex, optionIndex, label, metadata }: 
       <VkFlowLogo />
       <div
         className={`vk-flow-card vk-flow-card--selected vk-flow-card--position-${optionIndex + 1}${questionIndex === 2 && optionIndex === 2 ? ' vk-flow-card--hero' : ''}`}
-        role={questionIndex === 2 && optionIndex === 2 ? 'img' : undefined}
-        aria-label={questionIndex === 2 && optionIndex === 2 ? label : undefined}
         style={{ backgroundImage: `url(${cards[questionIndex][optionIndex]})` }}
       >
-        {questionIndex === 2 && optionIndex === 2 ? null : <span>{label[0].toUpperCase() + label.slice(1)}</span>}
+        <span>{label[0].toUpperCase() + label.slice(1)}</span>
       </div>
       <MetadataBubbles metadata={metadata} origin={`position-${optionIndex + 1}`} />
     </section>
