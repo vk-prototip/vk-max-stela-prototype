@@ -28,6 +28,11 @@ describe('approved September 29 copy', () => {
   it('keeps the start invitation and sends each branch to its panel', () => {
     expect(onboardingCopy.voice).toBe('Со мной можно говорить своими словами. Скажи, например, «поехали»')
     expect(maxTransitionPrompt).toBe('Пройди к правой панели,\nчтобы начать')
-    expect(vkCopy.finalDirection).toBe('Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.')
+    expect(vkCopy.finalDirection.replace(/\s+/g, ' ')).toBe('Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.')
+  })
+
+  it('uses the new Discovery activation screen copy', () => {
+    expect(vkCopy.discoveryActivationTitle).toBe('Технологии Discovery активированы')
+    expect(vkCopy.discoveryActivationDescription).toBe('Технологии персонализации Discovery уже начали собирать подборку.')
   })
 })

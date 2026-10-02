@@ -15,8 +15,11 @@ export const vkCopy = {
   digitizeTermsPlaceholder: 'здесь будут условия использования персональных данных.',
   // working-draft: short screen heading for the user's requested M/Ж choice.
   genderPrompt: 'Укажи пол',
-  finalTitle: 'Мы уже подобрали контент, который совпадает с тобой настолько, что ты почти становишься его главным героем.',
-  finalDirection: 'Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.',
+  // client-verbatim: activation screen in Google Doc "VK Видео_Стелла".
+  discoveryActivationTitle: 'Технологии Discovery активированы',
+  discoveryActivationDescription: 'Технологии персонализации Discovery уже начали собирать подборку.',
+  finalTitle: 'Мы уже подобрали контент,\nкоторый совпадает\nс тобой настолько,\nчто ты почти становишься\nего главным героем.',
+  finalDirection: 'Пройди к левой стене\nVK Видео – там твоя подборка оживёт вокруг тебя.',
   // user-approved in the earlier direct request; the new document does not specify this control.
   thanks: 'спасибо',
 }

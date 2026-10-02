@@ -11,6 +11,7 @@ import photoSkipImage from '../../assets/images/vk-flow/photo-skip.png'
 import cameraIcon from '../../assets/images/vk-flow/camera-icon.png'
 import scanSilhouette from '../../assets/images/vk-flow/scan-silhouette.png'
 import thanksImage from '../../assets/images/vk-flow/thanks.png'
+import discoverySymbol from '../../assets/images/vk-flow/discovery-symbol.png'
 import { OnboardingScreen } from '../../components/OnboardingScreen'
 import { ProductMark } from '../../components/ProductMark'
 import { QuestionScreen } from '../../components/QuestionScreen'
@@ -50,6 +51,7 @@ type ScreenState =
   | { type: 'vk-gender'; answers: string[]; rankedThemes: VkTheme[] }
   | { type: 'vk-camera'; themes: VkTheme[] }
   | { type: 'vk-scanning'; themes: VkTheme[] }
+  | { type: 'vk-discovery-activation'; themes: VkTheme[]; metadata: string[] }
   | { type: 'vk-final'; themes: VkTheme[] }
 
 const homeState: ScreenState = { type: 'home' }
@@ -119,6 +121,16 @@ export function Prototype() {
     const timeout = window.setTimeout(() => {
       setScreen({ type: 'vk-final', themes: screen.themes })
     }, 2400)
+
+    return () => window.clearTimeout(timeout)
+  }, [screen])
+
+  useEffect(() => {
+    if (screen.type !== 'vk-discovery-activation') return
+
+    const timeout = window.setTimeout(() => {
+      setScreen({ type: 'vk-final', themes: screen.themes })
+    }, 3200)
 
     return () => window.clearTimeout(timeout)
   }, [screen])
@@ -235,10 +247,13 @@ export function Prototype() {
       return
     }
     publisher.recommendation(calculateThemeScores(screen.answers), rankedThemes, answerId, discoveryRules[answerId], 'not-requested')
+    const metadata = [...screen.answers, answerId].flatMap((selectedId, index) =>
+      vkQuestions[index].options.find(({ id }) => id === selectedId)?.metadata ?? [],
+    )
     setScreen({
       type: 'vk-answer-reveal', questionIndex: screen.index,
       optionIndex: question.options.findIndex(({ id }) => id === answerId), label: option.label, metadata: option.metadata,
-      next: { type: 'vk-final', themes: rankedThemes.slice(0, 3) },
+      next: { type: 'vk-discovery-activation', themes: rankedThemes.slice(0, 3), metadata },
     })
   }
 
@@ -254,9 +269,12 @@ export function Prototype() {
       return
     }
     publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'skipped')
+    const metadata = [...screen.answers, 'hero'].flatMap((selectedId, index) =>
+      vkQuestions[index].options.find(({ id }) => id === selectedId)?.metadata ?? [],
+    )
     setScreen({
       type: 'vk-photo-reveal', answerId, metadata: option.metadata,
-      next: { type: 'vk-final', themes: screen.rankedThemes.slice(0, 3) },
+      next: { type: 'vk-discovery-activation', themes: screen.rankedThemes.slice(0, 3), metadata },
     })
   }
 
@@ -533,6 +551,20 @@ export function Prototype() {
             aria-label="Имитация оцифровки"
           >
             <img className="vk-scan-silhouette" src={scanSilhouette} alt="" />
+          </section>
+        )}
+
+        {screen.type === 'vk-discovery-activation' && (
+          <section className="screen screen--vk-discovery-activation" aria-labelledby="vk-activation-title">
+            <VkFlowLogo />
+            <h1 id="vk-activation-title">{vkCopy.discoveryActivationTitle}</h1>
+            <p>{vkCopy.discoveryActivationDescription}</p>
+            <img className="vk-activation-symbol" src={discoverySymbol} alt="" />
+            <div className="vk-activation-tags" aria-hidden="true">
+              {[...new Set(screen.metadata)].slice(0, 10).map((tag, index) => (
+                <span key={tag} className={`vk-activation-tag vk-activation-tag--${index + 1}`}>{tag}</span>
+              ))}
+            </div>
           </section>
         )}
 
