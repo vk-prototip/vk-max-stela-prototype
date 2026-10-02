@@ -1091,14 +1091,14 @@ button {
   left: 85.96px;
   display: flex;
   width: 908.09px;
-  height: 150px;
+  height: 119px;
   max-width: none;
   align-items: flex-start;
   justify-content: center;
   font-size: 48px;
   line-height: 1.1;
   text-align: center;
-  text-wrap: balance;
+  text-wrap: wrap;
 }
 
 .vk-flow-grid {
@@ -1178,6 +1178,11 @@ button {
 .screen--vk-answer-reveal-2 .vk-flow-card--position-1 span {
   bottom: 43px;
   left: 50px;
+}
+
+.screen--vk-flow-question-2 .vk-flow-card:nth-child(4) span,
+.screen--vk-answer-reveal-2 .vk-flow-card--position-4 span {
+  max-width: 380px;
 }
 
 .vk-flow-back {

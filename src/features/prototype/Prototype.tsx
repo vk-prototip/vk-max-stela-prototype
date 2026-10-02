@@ -298,7 +298,7 @@ export function Prototype() {
       >
         <main
           className={`experience experience--${backgroundVariant}`}
-          style={{ transform: `scale(${canvasScale})` }}
+          style={{ zoom: canvasScale }}
         >
           <div className="experience__content" key={screen.type}>
         {screen.type === 'home' && (
