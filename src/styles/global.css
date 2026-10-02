@@ -1138,6 +1138,11 @@ button {
   filter: brightness(1.13);
 }
 
+.vk-flow-card--hero {
+  background-color: #ff2147;
+  background-size: 468px 280px;
+}
+
 .vk-flow-card span {
   position: absolute;
   right: 32px;

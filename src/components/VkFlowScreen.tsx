@@ -11,9 +11,10 @@ import q22 from '../assets/images/vk-flow/question-2-option-2.png'
 import q23 from '../assets/images/vk-flow/question-2-option-3.png'
 import q24 from '../assets/images/vk-flow/question-2-option-4.png'
 import q3 from '../assets/images/vk-flow/question-3-option.png'
+import q3hero from '../assets/images/vk-flow/question-3-option-hero.png'
 import { vkQuestions } from '../content/vkVideo'
 
-const cards = [[q11, q12, q13, q14], [q21, q22, q23, q24], [q3, q3, q3, q3]]
+const cards = [[q11, q12, q13, q14], [q21, q22, q23, q24], [q3, q3, q3hero, q3]]
 
 function MetadataBubbles({ metadata, origin }: { metadata: string[]; origin: string }) {
   return (
@@ -53,13 +54,14 @@ export function VkFlowQuestion({ index, onSelect, onBack }: {
       <div className="vk-flow-grid">
         {question.options.map((option, optionIndex) => (
           <button
-            className="vk-flow-card"
+            className={`vk-flow-card${index === 2 && optionIndex === 2 ? ' vk-flow-card--hero' : ''}`}
             type="button"
             key={option.id}
+            aria-label={index === 2 && optionIndex === 2 ? option.label : undefined}
             style={{ backgroundImage: `url(${cards[index][optionIndex]})` }}
             onClick={() => onSelect(option.id)}
           >
-            <span>{option.label[0].toUpperCase() + option.label.slice(1)}</span>
+            {index === 2 && optionIndex === 2 ? null : <span>{option.label[0].toUpperCase() + option.label.slice(1)}</span>}
           </button>
         ))}
       </div>
@@ -78,10 +80,12 @@ export function VkAnswerReveal({ questionIndex, optionIndex, label, metadata }: 
     <section className={`screen screen--vk-answer-reveal${questionIndex === 1 ? ' screen--vk-answer-reveal-2' : ''}`} aria-label="Метаданные ответа">
       <VkFlowLogo />
       <div
-        className={`vk-flow-card vk-flow-card--selected vk-flow-card--position-${optionIndex + 1}`}
+        className={`vk-flow-card vk-flow-card--selected vk-flow-card--position-${optionIndex + 1}${questionIndex === 2 && optionIndex === 2 ? ' vk-flow-card--hero' : ''}`}
+        role={questionIndex === 2 && optionIndex === 2 ? 'img' : undefined}
+        aria-label={questionIndex === 2 && optionIndex === 2 ? label : undefined}
         style={{ backgroundImage: `url(${cards[questionIndex][optionIndex]})` }}
       >
-        <span>{label[0].toUpperCase() + label.slice(1)}</span>
+        {questionIndex === 2 && optionIndex === 2 ? null : <span>{label[0].toUpperCase() + label.slice(1)}</span>}
       </div>
       <MetadataBubbles metadata={metadata} origin={`position-${optionIndex + 1}`} />
     </section>
