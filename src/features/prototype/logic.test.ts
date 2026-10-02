@@ -3,13 +3,16 @@ import { calculateThemeScores, getMaxMission, rankThemes, selectTopThemes } from
 import { vkQuestions, vkThemes } from '../../content/vkVideo'
 
 describe('MAX mission routing', () => {
-  it('keeps the agreed two-question route', () => {
-    expect(getMaxMission('personal', 'access')).toBe('digital-id')
-    expect(getMaxMission('business', 'access')).toBe('digital-id')
-    expect(getMaxMission('personal', 'connection')).toBe('communication')
-    expect(getMaxMission('business', 'connection')).toBe('communication')
-    expect(getMaxMission('personal', 'visibility')).toBe('blogger')
+  it('sends every business goal to business promotion', () => {
+    expect(getMaxMission('business', 'access')).toBe('business-promotion')
+    expect(getMaxMission('business', 'connection')).toBe('business-promotion')
     expect(getMaxMission('business', 'visibility')).toBe('business-promotion')
+  })
+
+  it('keeps the personal goals distinct', () => {
+    expect(getMaxMission('personal', 'access')).toBe('digital-id')
+    expect(getMaxMission('personal', 'connection')).toBe('communication')
+    expect(getMaxMission('personal', 'visibility')).toBe('blogger')
   })
 })
 

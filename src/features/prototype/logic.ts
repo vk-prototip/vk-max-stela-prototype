@@ -12,9 +12,10 @@ export function getMaxMission(
   audience: MaxAudience,
   goal: MaxGoal,
 ): MaxMission {
+  if (audience === 'business') return 'business-promotion'
   if (goal === 'access') return 'digital-id'
   if (goal === 'connection') return 'communication'
-  return audience === 'personal' ? 'blogger' : 'business-promotion'
+  return 'blogger'
 }
 
 export function getMaxMissionLabel(
