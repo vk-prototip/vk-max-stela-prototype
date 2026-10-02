@@ -50,4 +50,5 @@ export const maxMissionDescriptions: Record<MaxMission, string> = {
 
 // user-approved: direct copy and line-break correction, 2026-09-28.
 export const maxTransitionPrompt = 'Пройди к правой панели,\nчтобы начать'
-export const maxChooseAnotherMission = 'Подобрать другую миссию'
+// user-approved: final button copy, 2026-10-02.
+export const maxThanks = 'спасибо'

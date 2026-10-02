@@ -17,7 +17,7 @@ import { QuestionScreen } from '../../components/QuestionScreen'
 import { VkAnswerReveal, VkFlowBack, VkFlowLogo, VkFlowQuestion, VkPhotoReveal } from '../../components/VkFlowScreen'
 import {
   maxAudienceOptions,
-  maxChooseAnotherMission,
+  maxThanks,
   maxGoalOptions,
   maxMissionDescriptions,
   maxMissionLabels,
@@ -387,14 +387,9 @@ export function Prototype() {
             <button
               className="secondary-button result-reset"
               type="button"
-              onClick={() => {
-                const nextPublisher = createEventPublisher(crypto.randomUUID(), sink)
-                nextPublisher.start('max')
-                setPublisher(nextPublisher)
-                setScreen({ type: 'max-audience' })
-              }}
+              onClick={reset}
             >
-              {maxChooseAnotherMission}
+              {maxThanks}
             </button>
           </section>
         )}
