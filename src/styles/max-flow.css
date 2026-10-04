@@ -1,0 +1,477 @@
+@font-face {
+  font-family: 'Max Sans';
+  src: url('../assets/fonts/Max_Sans_Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Max Sans';
+  src: url('../assets/fonts/Max_Sans_Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Max Sans';
+  src: url('../assets/fonts/Max_Sans_DemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Max Sans';
+  src: url('../assets/fonts/Max_Sans_Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.experience--max {
+  background-image: url('../assets/images/max-flow/background.webp');
+}
+
+.max-flow-screen {
+  position: relative;
+  display: block;
+  padding: 0;
+  background: none;
+  color: #fff;
+  font-family: 'Max Sans', 'VK Sans Display', sans-serif;
+  text-align: center;
+}
+
+.max-flow-logo {
+  position: absolute;
+  top: 153.21px;
+  left: 336.16px;
+  width: 407.67px;
+  height: 130px;
+  object-fit: contain;
+}
+
+.max-flow-logo--large {
+  top: 150px;
+  left: 304.84px;
+  width: 470.39px;
+  height: 150px;
+}
+
+.max-flow-question.max-flow-question--audience h1 { font-weight: 700; }
+
+.max-flow-screen h1 {
+  position: absolute;
+  top: 339.84px;
+  left: 156.3px;
+  width: 767.4px;
+  max-width: none;
+  margin: 0;
+  font-family: 'Max Sans', 'VK Sans Display', sans-serif;
+  font-size: 75px;
+  font-weight: 600;
+  line-height: 80px;
+  letter-spacing: 0;
+  text-wrap: normal;
+  white-space: pre-line;
+  background: linear-gradient(90deg, #ffeff0, #d2e7ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.max-flow-question--goal h1 { left: 156.51px; }
+.max-flow-result h1 { left: 156.54px; }
+
+.max-flow-steps {
+  position: absolute;
+  top: 477.98px;
+  left: 304.51px;
+  width: 621.37px;
+  height: 378.66px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.max-flow-step {
+  position: absolute;
+  top: 0;
+  display: grid;
+  grid-template-columns: 62.71px 1fr;
+  align-items: center;
+  width: 100%;
+  height: 119px;
+}
+
+.max-flow-step:nth-child(2) { top: 130.66px; }
+.max-flow-step:nth-child(3) { top: 259.66px; }
+
+/* Figma Auto is 128px here; 119px is the text frame, not the line height. */
+.max-flow-number {
+  position: absolute;
+  top: 0;
+  left: -8.955px;
+  font-family: 'VK Sans Display', sans-serif;
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 128px;
+}
+
+.max-flow-step:nth-child(2) .max-flow-number { left: -17.939px; }
+.max-flow-step:nth-child(3) .max-flow-number { left: -17.744px; }
+
+.max-flow-step-text {
+  position: absolute;
+  top: 19.31px;
+  left: 62.71px;
+  display: flex;
+  width: 282.39px;
+  height: 86.37px;
+  align-items: center;
+  font-family: 'Max Sans', 'VK Sans Display', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 43.2px;
+  filter: url('#figma-text-edges');
+  white-space: pre-line;
+}
+
+.max-flow-step:nth-child(2) .max-flow-step-text {
+  top: -54px;
+  width: 483.23px;
+  height: 232.41px;
+}
+
+.max-flow-step:nth-child(3) .max-flow-step-text {
+  top: 48px;
+  width: 555.12px;
+  height: 71.36px;
+}
+
+.max-flow-voice,
+.max-flow-touch {
+  position: absolute;
+  top: 974.8px;
+  left: 171.13px;
+  width: 737.74px;
+  margin: 0;
+  opacity: .72;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 39px;
+  white-space: pre-line;
+}
+
+.max-flow-voice strong { font-weight: 700; }
+.max-flow-touch { top: 1247.8px; }
+
+.max-flow-button {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 200px;
+  color: #fff;
+  background: transparent;
+  transition: filter 160ms ease;
+}
+
+.max-flow-button img,
+.max-flow-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.max-flow-button span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 44px;
+}
+
+.max-flow-button--start {
+  top: 1084.46142578125px;
+  left: 360px;
+  width: 360px;
+  height: 140px;
+  border-radius: 70px;
+  overflow: hidden;
+}
+
+/* Figma 4688:54732: native full-frame crop preserves Glass and its backdrop. */
+.max-flow-button--start img {
+  position: absolute;
+  top: -.46142578125px;
+  left: 0;
+  width: 360px;
+  height: 141px;
+}
+
+.max-flow-button--start span { font-family: 'VK Sans Display', sans-serif; font-size: 50px; font-weight: 700; line-height: 64px; }
+
+.max-flow-button--thanks {
+  z-index: 3;
+  top: 1051.41px;
+  left: 250px;
+  width: 580px;
+  height: 120px;
+  overflow: hidden;
+}
+
+.max-flow-button--thanks img {
+  position: absolute;
+  top: -.41px;
+  left: 0;
+  width: 580px;
+  height: 121px;
+}
+
+.max-flow-button--thanks span { font-family: 'VK Sans Display', sans-serif; }
+
+.max-flow-button--back {
+  top: 865px;
+  left: 408.75px;
+  width: 262.5px;
+  height: 120px;
+  overflow: hidden;
+}
+
+/* Native full-frame crops preserve Figma Glass against the real backdrop. */
+.max-flow-button--back img {
+  position: absolute;
+  width: 263px;
+  height: 121px;
+  left: -.051px;
+  top: -.08px;
+}
+
+.max-flow-question--audience .max-flow-button--back img {
+  width: 264px;
+  left: -.84px;
+  top: -.664px;
+}
+
+.max-flow-button--back span {
+  top: 38px;
+  bottom: auto;
+  left: 92.44px;
+  right: auto;
+  width: 108px;
+  height: 44px;
+  line-height: normal;
+}
+.max-flow-question--goal .max-flow-button--back {
+  top: 1192.08px;
+  left: 409.051px;
+  width: 262.319px;
+}
+.max-flow-question--audience .max-flow-button--back {
+  top: 864.664px;
+  left: 408.84px;
+  width: 262.319px;
+}
+
+.max-flow-card {
+  position: absolute;
+  width: 465px;
+  height: 280px;
+  padding: 0;
+  border: 0;
+  border-radius: 60px;
+  color: #fff;
+  background: transparent;
+  text-align: left;
+  transition: filter 160ms ease;
+}
+
+.max-flow-card--business { left: 45.27px; top: 549px; }
+.max-flow-card--personal { left: 558.5px; top: 549px; }
+.max-flow-card--access { left: 50.88px; top: 552.38px; }
+.max-flow-card--connection { left: 564.12px; top: 552.38px; }
+.max-flow-card--visibility { left: 307.5px; top: 872.73px; }
+
+.max-flow-card span {
+  position: absolute;
+  top: 158.32px;
+  left: 41.96px;
+  width: 381.55px;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 43.2px;
+  filter: url('#figma-text-edges');
+  white-space: pre-line;
+}
+
+.max-flow-card--personal span { top: 157.6px; left: 43.51px; width: 306.75px; }
+
+.max-flow-question--audience .max-flow-card span {
+  display: flex;
+  align-items: center;
+  top: 115.05px;
+  height: 172.95px;
+  line-height: 46px;
+}
+
+.max-flow-question--audience .max-flow-card--personal span {
+  top: 165.18px;
+  height: 71.24px;
+}
+
+.max-flow-question--goal .max-flow-card span {
+  display: flex;
+  align-items: center;
+  top: 115.05px;
+  height: 172.95px;
+}
+
+.max-flow-question--goal .max-flow-card--connection span,
+.max-flow-question--goal .max-flow-card--visibility span {
+  top: 165.18px;
+  left: 43.51px;
+  width: 306.75px;
+  height: 71.24px;
+}
+
+.max-flow-question--goal .max-flow-card--connection span { width: 333.26px; }
+
+.max-flow-audience-badge {
+  position: absolute;
+  top: 468.91px;
+  left: 617.77px;
+  width: 211px;
+  height: 211px;
+  pointer-events: none;
+}
+
+.max-flow-button:hover,
+.max-flow-card:hover { filter: brightness(1.12); }
+.max-flow-button:focus-visible,
+.max-flow-card:focus-visible { outline: 3px solid #fff; outline-offset: 6px; }
+
+.max-flow-result--digital-id {
+  background: url('../assets/images/max-flow/final-background.webp') center / 1080px 1920px no-repeat;
+}
+
+.max-flow-mission-label { display: block; }
+
+.max-flow-description {
+  position: absolute;
+  top: 711.3px;
+  left: 289.45px;
+  width: 499px;
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 44px;
+  filter: url('#figma-text-edges');
+  white-space: pre-line;
+}
+
+.max-flow-result:not(.max-flow-result--digital-id) .max-flow-description {
+  left: 156.3px;
+  width: 767.4px;
+}
+
+/* Native SVG includes a trailing space on these lines; preserve the copy
+   and compensate the visual centering without adding invisible characters. */
+.max-flow-result--digital-id .max-flow-description-line:nth-child(-n+2) {
+  position: relative;
+  left: -4.5px;
+}
+
+.max-flow-direction {
+  position: absolute;
+  top: 986.23px;
+  left: 251.73px;
+  width: 574px;
+  margin: 0;
+  opacity: .72;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 39px;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #ffeff0, #d2e7ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.max-flow-reset {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.max-flow-reset:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
+}
+
+/* Figma MAX 4683:108536: Additional 02, radius 60, Max Sans DemiBold 36. */
+.max-flow-answer-reveal .max-flow-card { pointer-events: none; }
+.max-metadata { --origin-x: 277.77px; --origin-y: 689px; }
+.max-metadata--personal { --origin-x: 791px; }
+.max-metadata--access { --origin-x: 283.38px; --origin-y: 692.38px; }
+.max-metadata--connection { --origin-x: 796.62px; --origin-y: 692.38px; }
+.max-metadata--visibility { --origin-x: 540px; --origin-y: 1012.73px; }
+
+.max-metadata .max-metadata-tag {
+  min-width: 160px;
+  max-width: 480px;
+  min-height: 100px;
+  padding: 15.96px 50px 19.15px;
+  border: 0;
+  border-radius: 60px;
+  background: linear-gradient(90deg, #471aff, #9500ff);
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: 'Max Sans', 'VK Sans Display', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: normal;
+  animation-name: max-metadata-fly;
+}
+
+.max-metadata-tag > span {
+  background: linear-gradient(90deg, #ffeff0, #eed6ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes max-metadata-fly {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--origin-x) - var(--target-x) - 50%), calc(var(--origin-y) - var(--target-y) - 50%)) scale(.3);
+  }
+  40%, 75% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(var(--bubble-scale)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .max-metadata .max-metadata-tag {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(var(--bubble-scale));
+  }
+}
+
+/* These VK Video layers also specify Max Sans in the source design. */
+.screen--digitize .digitize-description,
+.screen--vk-camera h1,
+.vk-onboarding-step:nth-child(2) .vk-onboarding-step-text {
+  font-family: 'Max Sans', 'VK Sans Display', sans-serif;
+}

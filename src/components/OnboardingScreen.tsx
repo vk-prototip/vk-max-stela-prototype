@@ -1,7 +1,6 @@
 import { onboardingCopy, onboardingIntroductions } from '../content/onboarding'
 import type { Product } from '../types/prototype'
-import { BackButton } from './BackButton'
-import { ProductMark } from './ProductMark'
+import { MaxFlowButton, MaxFlowLogo } from './MaxFlowScreen'
 import vkVideoLogo from '../assets/images/onboarding/vk-video/logo.png'
 import vkVideoHighlight from '../assets/images/onboarding/vk-video/highlight.png'
 import vkVideoStart from '../assets/images/onboarding/vk-video/start.png'
@@ -12,8 +11,10 @@ interface OnboardingScreenProps {
   onBack: () => void
 }
 
-export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenProps) {
+export function OnboardingScreen({ product, onStart }: OnboardingScreenProps) {
   const introduction = onboardingIntroductions[product]
+  const [maxVoiceBefore, maxVoiceAfter] = onboardingCopy.maxVoice.split('ПОЕХАЛИ')
+  const [vkVoiceBefore, vkVoiceAfter] = onboardingCopy.voice.split('«ПОЕХАЛИ»')
 
   if (product === 'vk-video') {
     return (
@@ -29,7 +30,7 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
             </li>
           ))}
         </ol>
-        <p className="vk-onboarding-voice">{onboardingCopy.voice}</p>
+        <p className="vk-onboarding-voice">{vkVoiceBefore}<strong>«ПОЕХАЛИ»</strong>{vkVoiceAfter}</p>
         <button className="vk-onboarding-start" type="button" aria-label="Начать" onClick={onStart}>
           <img src={vkVideoStart} alt="" />
         </button>
@@ -39,27 +40,19 @@ export function OnboardingScreen({ product, onStart, onBack }: OnboardingScreenP
   }
 
   return (
-    <section className="screen screen--onboarding screen--max-onboarding" aria-labelledby="onboarding-title">
-      <ProductMark product={product} />
-      <div className="onboarding-intro">
-        <h1 id="onboarding-title">{introduction.title}</h1>
-        <ol className="onboarding-steps">
+    <section className="screen max-flow-screen max-flow-onboarding" aria-label="Онбординг MAX">
+      <MaxFlowLogo />
+        <ol className="max-flow-steps">
           {introduction.steps.map((step, index) => (
-            <li className="onboarding-step" key={step}>
-              <span className="onboarding-step__label" aria-label={`Шаг ${index + 1}`}>{index + 1}</span>
-              <p>{step}</p>
+            <li className="max-flow-step" key={step}>
+              <span className="max-flow-number" aria-hidden="true">{index + 1}</span>
+              <span className="max-flow-step-text">{step}</span>
             </li>
           ))}
         </ol>
-      </div>
-      <div className="onboarding-actions">
-        <p className="onboarding-voice">{onboardingCopy.voice}</p>
-        <button className="primary-button onboarding-start" type="button" onClick={onStart}>
-          {onboardingCopy.start}
-        </button>
-        <p className="onboarding-touch">{onboardingCopy.touch}</p>
-      </div>
-      <BackButton onClick={onBack} />
+      <p className="max-flow-voice">{maxVoiceBefore}<strong>ПОЕХАЛИ</strong>{maxVoiceAfter}</p>
+      <MaxFlowButton variant="start" onClick={onStart}>{onboardingCopy.maxStart}</MaxFlowButton>
+      <p className="max-flow-touch">{onboardingCopy.touch}</p>
     </section>
   )
 }

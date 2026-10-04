@@ -1,10 +1,21 @@
-import type { AnswerOption, Product, ThemeScore, VkGender, VkTheme } from '../../types/prototype'
+import type {
+  AiCoverAllocation,
+  AiCoverGenre,
+  AnswerOption,
+  Product,
+  ThemeScore,
+  VkContentPlan,
+  VkDiscoveryInstruction,
+  VkPhotoMode,
+  VkTheme,
+} from '../../types/prototype'
+import { createDiscoveryInstruction, createVkContentPlan } from './logic'
 
 export const eventName = 'vk-stela:event'
 export const channelName = 'vk-stela'
 
 interface EventBase {
-  version: 1
+  version: 2
   sessionId: string
   sequence: number
   occurredAt: string
@@ -12,9 +23,9 @@ interface EventBase {
 
 type EventData =
   | { type: 'session-start'; product: Product }
-  | { type: 'answer'; product: Product; questionId: string; answerId: string; answerLabel: string; metadata: string[]; themeDelta?: Partial<Record<VkTheme, number>> }
+  | { type: 'answer'; product: Product; questionId: string; answerId: string; answerLabel: string; metadata: string[]; themeDelta?: Partial<Record<VkTheme, number>>; coverDelta?: Partial<Record<AiCoverGenre, number>> }
   | { type: 'answer-cleared'; product: Product; questionId: string }
-  | { type: 'vk-recommendation'; product: 'vk-video'; scores: ThemeScore[]; rankedThemes: VkTheme[]; selectedThemes: VkTheme[]; discoveryAnswerId: string; discoveryRule: string; photoMode: 'included' | 'skipped' | 'not-requested'; gender?: VkGender }
+  | { type: 'vk-recommendation'; product: 'vk-video'; scores: ThemeScore[]; rankedThemes: VkTheme[]; selectedThemes: VkTheme[]; discoveryAnswerId: string; discoveryRule: string; photoMode: VkPhotoMode; coverAllocation: AiCoverAllocation; contentPlan: VkContentPlan; discoveryInstruction: VkDiscoveryInstruction }
 
 export type StelaEvent = EventBase & EventData
 
@@ -37,7 +48,7 @@ export function createEventPublisher(sessionId: string, sink: EventSink) {
   const send = (data: EventData) => {
     const event = {
       ...data,
-      version: 1,
+      version: 2,
       sessionId,
       sequence: ++sequence,
       occurredAt: new Date().toISOString(),
@@ -50,24 +61,38 @@ export function createEventPublisher(sessionId: string, sink: EventSink) {
     start(product: Product) {
       return send({ type: 'session-start', product })
     },
-    answer(product: Product, questionId: string, option: AnswerOption, themeDelta?: Partial<Record<VkTheme, number>>) {
+    answer(product: Product, questionId: string, option: AnswerOption, themeDelta?: Partial<Record<VkTheme, number>>, coverDelta?: Partial<Record<AiCoverGenre, number>>) {
       return send({
         type: 'answer', product, questionId,
         answerId: option.id,
         answerLabel: option.label,
         metadata: [...option.metadata],
-        ...(themeDelta ? { themeDelta } : {}),
+        ...(themeDelta ? { themeDelta: { ...themeDelta } } : {}),
+        ...(coverDelta ? { coverDelta: { ...coverDelta } } : {}),
       })
     },
     clear(product: Product, questionId: string) {
       return send({ type: 'answer-cleared', product, questionId })
     },
-    recommendation(scores: ThemeScore[], rankedThemes: VkTheme[], discoveryAnswerId: string, discoveryRule: string, photoMode: 'included' | 'skipped' | 'not-requested', gender?: VkGender) {
+    recommendation(scores: ThemeScore[], rankedThemes: VkTheme[], discoveryAnswerId: string, discoveryRule: string, photoMode: VkPhotoMode, coverAllocation: AiCoverAllocation) {
+      const contentPlan = createVkContentPlan(coverAllocation, photoMode)
+      const discoveryInstruction = createDiscoveryInstruction(discoveryAnswerId, rankedThemes, coverAllocation, photoMode, scores)
       return send({
-        type: 'vk-recommendation', product: 'vk-video', scores,
-        rankedThemes, selectedThemes: rankedThemes.slice(0, 3),
+        type: 'vk-recommendation', product: 'vk-video', scores: scores.map(score => ({ ...score })),
+        rankedThemes: [...rankedThemes], selectedThemes: coverAllocation.themeSelections.map(({ theme }) => theme),
         discoveryAnswerId, discoveryRule, photoMode,
-        ...(gender ? { gender } : {}),
+        contentPlan,
+        discoveryInstruction,
+        coverAllocation: {
+          scores: coverAllocation.scores.map(score => ({ ...score })),
+          rankedGenres: [...coverAllocation.rankedGenres],
+          themeSelections: coverAllocation.themeSelections.map(selection => ({
+            ...selection,
+            candidates: [...selection.candidates],
+            highestScoringGenres: [...selection.highestScoringGenres],
+          })),
+          selectionPolicy: coverAllocation.selectionPolicy,
+        },
       })
     },
   }

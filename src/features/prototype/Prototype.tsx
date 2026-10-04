@@ -5,53 +5,45 @@ import {
 import homePointer from '../../assets/images/home/pointer.png'
 import firstScreenMax from '../../assets/images/home/first-screen/max.png'
 import firstScreenVkVideo from '../../assets/images/home/first-screen/vk-video.png'
-import maxChatImage from '../../assets/images/results/max-chat.png'
-import photoAcceptImage from '../../assets/images/vk-flow/photo-accept.png'
 import photoSkipImage from '../../assets/images/vk-flow/photo-skip.png'
 import cameraIcon from '../../assets/images/vk-flow/camera-icon.png'
-import scanSilhouette from '../../assets/images/vk-flow/scan-silhouette.png'
-import thanksImage from '../../assets/images/vk-flow/thanks.png'
-import finalQrReference from '../../assets/images/vk-flow/final-qr-reference.png'
-import discoverySymbol from '../../assets/images/vk-flow/discovery-symbol.png'
 import { OnboardingScreen } from '../../components/OnboardingScreen'
-import { ProductMark } from '../../components/ProductMark'
-import { QuestionScreen } from '../../components/QuestionScreen'
-import { VkAnswerReveal, VkFlowBack, VkFlowLogo, VkFlowQuestion, VkPhotoReveal } from '../../components/VkFlowScreen'
+import { TextRenderingFilters } from '../../components/TextRenderingFilters'
+import { ProductIntroScreen, productIntroDuration } from '../../components/ProductIntroScreen'
+import { MaxAnswerReveal, MaxFlowQuestion, MaxFlowResult } from '../../components/MaxFlowScreen'
+import { VkAnswerReveal, VkDiscoveryActivation, VkFlowLogo, VkFlowQuestion, VkPhotoReveal, VkScanningScreen } from '../../components/VkFlowScreen'
 import {
   maxAudienceOptions,
-  maxThanks,
-  maxGoalOptions,
-  maxMissionDescriptions,
-  maxMissionLabels,
-  maxPrompts,
-  maxTransitionPrompt,
+  getMaxGoalOption,
 } from '../../content/max'
 import { onboardingCopy } from '../../content/onboarding'
-import { discoveryRules, vkCopy, vkGenderOptions, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
+import { discoveryRules, vkCopy, vkPhotoOptions, vkQuestions } from '../../content/vkVideo'
 import type {
   MaxAudience,
   MaxGoal,
   MaxMission,
-  VkGender,
+  Product,
+  AiCoverAllocation,
   VkTheme,
 } from '../../types/prototype'
-import { calculateThemeScores, getMaxMission, rankThemes } from './logic'
+import { calculateThemeScores, createAiCoverAllocation, getAiCoverDelta, getMaxMission, rankThemes } from './logic'
 import { createBrowserEventSink, createEventPublisher } from './events'
 
 type ScreenState =
   | { type: 'home' }
+  | { type: 'product-intro'; product: Product }
   | { type: 'max-onboarding' }
   | { type: 'vk-onboarding' }
   | { type: 'max-audience' }
   | { type: 'max-goal'; audience: MaxAudience }
   | { type: 'max-result'; mission: MaxMission }
+  | { type: 'max-answer-reveal'; kind: 'audience' | 'goal'; answerId: MaxAudience | MaxGoal; metadata: string[]; next: ScreenState }
   | { type: 'vk-question'; index: number; answers: string[] }
   | { type: 'vk-answer-reveal'; questionIndex: number; optionIndex: number; label: string; metadata: string[]; next: ScreenState }
   | { type: 'vk-photo-reveal'; answerId: 'accept' | 'skip'; metadata: string[]; next: ScreenState }
-  | { type: 'vk-digitize'; answers: string[]; rankedThemes: VkTheme[] }
-  | { type: 'vk-gender'; answers: string[]; rankedThemes: VkTheme[] }
-  | { type: 'vk-camera'; themes: VkTheme[] }
-  | { type: 'vk-scanning'; themes: VkTheme[] }
+  | { type: 'vk-digitize'; answers: string[]; rankedThemes: VkTheme[]; coverAllocation: AiCoverAllocation }
+  | { type: 'vk-camera'; themes: VkTheme[]; metadata: string[] }
+  | { type: 'vk-scanning'; themes: VkTheme[]; metadata: string[] }
   | { type: 'vk-discovery-activation'; themes: VkTheme[]; metadata: string[] }
   | { type: 'vk-final'; themes: VkTheme[] }
 
@@ -99,7 +91,16 @@ export function Prototype() {
   }, [])
 
   useEffect(() => {
-    if (screen.type !== 'vk-answer-reveal' && screen.type !== 'vk-photo-reveal') return
+    if (screen.type !== 'product-intro') return
+
+    const timeout = window.setTimeout(() => {
+      setScreen({ type: screen.product === 'max' ? 'max-onboarding' : 'vk-onboarding' })
+    }, productIntroDuration)
+    return () => window.clearTimeout(timeout)
+  }, [screen])
+
+  useEffect(() => {
+    if (screen.type !== 'vk-answer-reveal' && screen.type !== 'vk-photo-reveal' && screen.type !== 'max-answer-reveal') return
 
     const duration = screen.type === 'vk-photo-reveal' && screen.metadata.length === 0 ? 650 : 2300
     const timeout = window.setTimeout(() => setScreen(screen.next), duration)
@@ -110,7 +111,7 @@ export function Prototype() {
     if (screen.type !== 'vk-camera') return
 
     const timeout = window.setTimeout(() => {
-      setScreen({ type: 'vk-scanning', themes: screen.themes })
+      setScreen({ type: 'vk-scanning', themes: screen.themes, metadata: screen.metadata })
     }, 1800)
 
     return () => window.clearTimeout(timeout)
@@ -120,7 +121,7 @@ export function Prototype() {
     if (screen.type !== 'vk-scanning') return
 
     const timeout = window.setTimeout(() => {
-      setScreen({ type: 'vk-final', themes: screen.themes })
+      setScreen({ type: 'vk-discovery-activation', themes: screen.themes, metadata: screen.metadata })
     }, 2400)
 
     return () => window.clearTimeout(timeout)
@@ -170,9 +171,9 @@ export function Prototype() {
     setScreen(homeState)
   }
 
-  const startProduct = (product: 'max' | 'vk-video') => {
+  const startProduct = (product: Product) => {
     publisher.start(product)
-    setScreen({ type: product === 'max' ? 'max-onboarding' : 'vk-onboarding' })
+    setScreen({ type: 'product-intro', product })
   }
 
   const goBack = () => {
@@ -206,10 +207,6 @@ export function Prototype() {
           answers: screen.answers,
         })
         break
-      case 'vk-gender':
-        publisher.clear('vk-video', 'photo')
-        setScreen({ type: 'vk-digitize', answers: screen.answers, rankedThemes: screen.rankedThemes })
-        break
       default:
         break
     }
@@ -225,7 +222,9 @@ export function Prototype() {
     if (screen.index < 2) {
       const weightedQuestion = screen.index === 0 ? vkQuestions[0] : vkQuestions[1]
       const weightedOption = weightedQuestion.options.find(({ id }) => id === answerId)!
-      publisher.answer('vk-video', question.id, weightedOption, { [weightedOption.plusTwo]: 2, [weightedOption.plusOne]: 1 })
+      const themeDelta = { [weightedOption.plusTwo]: 2 }
+      themeDelta[weightedOption.plusOne] = (themeDelta[weightedOption.plusOne] ?? 0) + 1
+      publisher.answer('vk-video', question.id, weightedOption, themeDelta, getAiCoverDelta(question.id, answerId))
       setScreen({
         type: 'vk-answer-reveal',
         questionIndex: screen.index,
@@ -239,22 +238,25 @@ export function Prototype() {
 
     publisher.answer('vk-video', question.id, option)
     const rankedThemes = rankThemes(screen.answers)
+    // The scenario selects three themes; Discovery applies the third answer separately.
+    const themes = rankedThemes.slice(0, 3)
+    const coverAllocation = createAiCoverAllocation(screen.answers, themes)
     if (answerId === 'hero') {
       setScreen({
         type: 'vk-answer-reveal', questionIndex: screen.index,
         optionIndex: question.options.findIndex(({ id }) => id === answerId), label: option.label, metadata: option.metadata,
-        next: { type: 'vk-digitize', answers: screen.answers, rankedThemes },
+        next: { type: 'vk-digitize', answers: screen.answers, rankedThemes, coverAllocation },
       })
       return
     }
-    publisher.recommendation(calculateThemeScores(screen.answers), rankedThemes, answerId, discoveryRules[answerId], 'not-requested')
+    publisher.recommendation(calculateThemeScores(screen.answers), rankedThemes, answerId, discoveryRules[answerId], 'not-requested', coverAllocation)
     const metadata = [...screen.answers, answerId].flatMap((selectedId, index) =>
       vkQuestions[index].options.find(({ id }) => id === selectedId)?.metadata ?? [],
     )
     setScreen({
       type: 'vk-answer-reveal', questionIndex: screen.index,
       optionIndex: question.options.findIndex(({ id }) => id === answerId), label: option.label, metadata: option.metadata,
-      next: { type: 'vk-discovery-activation', themes: rankedThemes.slice(0, 3), metadata },
+      next: { type: 'vk-discovery-activation', themes, metadata },
     })
   }
 
@@ -262,33 +264,29 @@ export function Prototype() {
     if (screen.type !== 'vk-digitize') return
     const option = vkPhotoOptions.find(({ id }) => id === answerId)!
     publisher.answer('vk-video', 'photo', option)
-    if (answerId === 'accept') {
-      setScreen({
-        type: 'vk-photo-reveal', answerId, metadata: option.metadata,
-        next: { type: 'vk-gender', answers: screen.answers, rankedThemes: screen.rankedThemes },
-      })
-      return
-    }
-    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'skipped')
+    const themes = screen.coverAllocation.themeSelections.map(({ theme }) => theme)
     const metadata = [...screen.answers, 'hero'].flatMap((selectedId, index) =>
       vkQuestions[index].options.find(({ id }) => id === selectedId)?.metadata ?? [],
     )
+    if (answerId === 'accept') {
+      publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'included', screen.coverAllocation)
+      setScreen({
+        type: 'vk-photo-reveal', answerId, metadata: option.metadata,
+        next: { type: 'vk-camera', themes, metadata: [...metadata, ...option.metadata] },
+      })
+      return
+    }
+    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'skipped', screen.coverAllocation)
     setScreen({
       type: 'vk-photo-reveal', answerId, metadata: option.metadata,
-      next: { type: 'vk-discovery-activation', themes: screen.rankedThemes.slice(0, 3), metadata },
+      next: { type: 'vk-discovery-activation', themes, metadata },
     })
-  }
-
-  const selectGender = (gender: VkGender) => {
-    if (screen.type !== 'vk-gender') return
-    const option = vkGenderOptions.find(({ id }) => id === gender)!
-    publisher.answer('vk-video', 'gender', option)
-    publisher.recommendation(calculateThemeScores(screen.answers), screen.rankedThemes, 'hero', discoveryRules.hero, 'included', gender)
-    setScreen({ type: 'vk-camera', themes: screen.rankedThemes.slice(0, 3) })
   }
 
   const backgroundVariant = screen.type === 'home'
     ? 'home'
+    : screen.type === 'product-intro'
+      ? screen.product === 'max' ? 'max' : 'vk'
     : screen.type.startsWith('max-')
       ? 'max'
       : screen.type === 'vk-onboarding'
@@ -308,6 +306,7 @@ export function Prototype() {
         if (cursorRef.current) cursorRef.current.style.opacity = '0'
       }}
     >
+      <TextRenderingFilters />
       <div
         className="prototype-canvas"
         style={{
@@ -344,6 +343,8 @@ export function Prototype() {
           </section>
         )}
 
+        {screen.type === 'product-intro' && <ProductIntroScreen product={screen.product} />}
+
         {(screen.type === 'max-onboarding' || screen.type === 'vk-onboarding') && (
           <OnboardingScreen
             product={screen.type === 'max-onboarding' ? 'max' : 'vk-video'}
@@ -355,30 +356,29 @@ export function Prototype() {
         )}
 
         {screen.type === 'max-audience' && (
-          <QuestionScreen
-            product="max"
-            prompt={maxPrompts.audience}
-            options={maxAudienceOptions}
+          <MaxFlowQuestion
+            kind="audience"
             onSelect={(audience) => {
               const option = maxAudienceOptions.find(({ id }) => id === audience)!
               publisher.answer('max', 'audience', option)
-              setScreen({ type: 'max-goal', audience })
+              setScreen({
+                type: 'max-answer-reveal', kind: 'audience', answerId: audience, metadata: option.metadata,
+                next: { type: 'max-goal', audience },
+              })
             }}
             onBack={goBack}
           />
         )}
 
         {screen.type === 'max-goal' && (
-          <QuestionScreen
-            product="max"
-            prompt={maxPrompts.goal}
-            options={maxGoalOptions}
+          <MaxFlowQuestion
+            kind="goal"
             onSelect={(goal: MaxGoal) => {
-              const option = maxGoalOptions.find(({ id }) => id === goal)!
+              const option = getMaxGoalOption(screen.audience, goal)
               publisher.answer('max', 'goal', option)
               setScreen({
-                type: 'max-result',
-                mission: getMaxMission(screen.audience, goal),
+                type: 'max-answer-reveal', kind: 'goal', answerId: goal, metadata: option.metadata,
+                next: { type: 'max-result', mission: getMaxMission(screen.audience, goal) },
               })
             }}
             onBack={goBack}
@@ -386,31 +386,11 @@ export function Prototype() {
         )}
 
         {screen.type === 'max-result' && (
-          <section className="screen screen--result" aria-labelledby="max-result-title">
-            <ProductMark product="max" />
-            <div className="result-orbit result-orbit--max" aria-hidden="true">
-              <img src={maxChatImage} alt="" />
-            </div>
-            <h1 id="max-result-title">
-              <span className="mission-label">Миссия</span>{' '}
-              <span className="mission-name">
-                «{maxMissionLabels[screen.mission]}»
-              </span>
-            </h1>
-            <p className="result-copy result-copy--description">
-              {maxMissionDescriptions[screen.mission]}
-            </p>
-            <p className="result-copy result-copy--direction">
-              {maxTransitionPrompt}
-            </p>
-            <button
-              className="secondary-button result-reset"
-              type="button"
-              onClick={reset}
-            >
-              {maxThanks}
-            </button>
-          </section>
+          <MaxFlowResult mission={screen.mission} onReset={reset} />
+        )}
+
+        {screen.type === 'max-answer-reveal' && (
+          <MaxAnswerReveal kind={screen.kind} answerId={screen.answerId} metadata={screen.metadata} />
         )}
 
         {screen.type === 'vk-question' && (
@@ -442,7 +422,7 @@ export function Prototype() {
                 aria-label={vkCopy.digitizeAccept}
                 onClick={() => selectPhoto('accept')}
               >
-                <img src={photoAcceptImage} alt="" />
+                <span className="vk-photo-accept-face">{vkCopy.digitizeAccept}</span>
               </button>
               <button
                 className="vk-photo-button vk-photo-button--skip"
@@ -547,68 +527,19 @@ export function Prototype() {
         )}
 
         {screen.type === 'vk-scanning' && (
-          <section
-            className="screen screen--scanning"
-            aria-label="Имитация оцифровки"
-          >
-            <img className="vk-scan-silhouette" src={scanSilhouette} alt="" />
-          </section>
+          <VkScanningScreen />
         )}
 
         {screen.type === 'vk-discovery-activation' && (
-          <section className="screen screen--vk-discovery-activation" aria-labelledby="vk-activation-title">
-            <VkFlowLogo />
-            <h1 id="vk-activation-title">{vkCopy.discoveryActivationTitle}</h1>
-            <p>{vkCopy.discoveryActivationDescription}</p>
-            <img className="vk-activation-symbol" src={discoverySymbol} alt="" />
-            <div className="vk-activation-tags" aria-hidden="true">
-              {[...new Set(screen.metadata)].slice(0, 10).map((tag, index) => (
-                <span key={tag} className={`vk-activation-tag vk-activation-tag--${index + 1}`}>{tag}</span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {screen.type === 'vk-gender' && (
-          <section className="screen screen--gender" aria-labelledby="gender-title">
-            <VkFlowLogo />
-            <div className="gender-panel">
-              <h1 id="gender-title">{vkCopy.genderPrompt}</h1>
-              <div className="gender-options">
-                {vkGenderOptions.map((option) => (
-                  <button
-                    className="gender-option"
-                    type="button"
-                    key={option.id}
-                    aria-label={option.id === 'male' ? 'Мужской' : 'Женский'}
-                    onClick={() => selectGender(option.id)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <VkFlowBack onClick={goBack} />
-          </section>
+          <VkDiscoveryActivation metadata={screen.metadata} />
         )}
 
         {screen.type === 'vk-final' && (
           <section className="screen screen--vk-final" aria-labelledby="vk-result-title">
             <VkFlowLogo />
-            <h1 id="vk-result-title">{vkCopy.finalTitle}</h1>
-            <p className="result-copy">{vkCopy.finalDirection}</p>
-            <button
-              className="vk-final-thanks"
-              type="button"
-              aria-label={vkCopy.thanks}
-              onClick={reset}
-            >
-              <img src={thanksImage} alt="" />
-            </button>
-            <div className="vk-final-qr" role="img" aria-label="QR-код VK Видео">
-              <img src={finalQrReference} alt="" />
-            </div>
-            <p className="result-copy result-copy--after-qr">{vkCopy.finalDirection}</p>
+            <h1 id="vk-result-title">{vkCopy.finalDirection}</h1>
+            <div className="vk-final-qr" role="img" aria-label="QR-код VK Видео" />
+            <p className="vk-final-qr-caption">{vkCopy.finalQrCaption}</p>
           </section>
         )}
           </div>

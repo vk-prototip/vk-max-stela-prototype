@@ -8,3 +8,12 @@ test-results/
 *.log
 .DS_Store
 Thumbs.db
+
+# Local client sources and generated inspection artifacts are not deliverables.
+экспорты/
+local-sources/
+*.m4a
+бриф_*.txt
+бриф_*.md
+qa-artifacts/
+*.tsbuildinfo

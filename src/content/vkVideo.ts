@@ -1,27 +1,24 @@
-import type { AnswerOption, VkGender, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
+import type { AnswerOption, VkQuestion, VkTheme, WeightedOption } from '../types/prototype'
 
 // client-verbatim: Google Doc "VK Видео_Стелла", scenario and recommendation rules.
-// Metadata and score weights: Google Sheets "Метаданные_VK_Видео_и_MAX"; photo skip is overridden by direct user instruction.
+// Metadata: Google Sheets, VK Video!B2:F14 (gid=797280843), checked 2026-10-03.
+// Score weights: Google Sheets, VK Video_Themes (gid=829829883); photo skip is overridden by direct user instruction.
 export const vkCopy = {
   digitizeQuestion: 'Сделаем фото?',
-  digitizeDescription: 'На его основе превратим тебя\nв главного героя твоей\nперсональной подборки',
+  digitizeDescription: 'На его основе превратим\nтебя в главного героя твоей\nперсональной подборки',
   digitizeAccept: 'Да, давайте',
   digitizeSkip: 'Пропустить',
-  // user-approved: original wording with the requested typo correction.
+  // The consent notice intentionally retains the approved formal address.
   digitizeNoticePrefix: 'Отвечая «Да, давайте», вы принимаете ',
   digitizeNoticeAction: 'условия использования персональных данных',
   digitizeTermsTitle: 'Условия использования персональных данных',
   // Demonstration filler requested by the user; not legal terms.
   digitizeTermsPlaceholder: 'здесь будут условия использования персональных данных.',
-  // working-draft: short screen heading for the user's requested M/Ж choice.
-  genderPrompt: 'Укажи пол',
   // client-verbatim: activation screen in Google Doc "VK Видео_Стелла".
   discoveryActivationTitle: 'Технологии Discovery активированы',
   discoveryActivationDescription: 'Технологии персонализации Discovery уже начали собирать подборку.',
-  finalTitle: 'Мы уже подобрали контент,\nкоторый совпадает\nс тобой настолько,\nчто ты почти становишься\nего главным героем.',
-  finalDirection: 'Пройди к левой стене\nVK Видео – там твоя подборка оживёт вокруг тебя.',
-  // user-approved in the earlier direct request; the new document does not specify this control.
-  thanks: 'спасибо',
+  finalDirection: 'Пройди к левой панели\nVK Видео – там твоя подборка оживёт вокруг тебя',
+  finalQrCaption: 'Узнай больше о Discovery',
 }
 
 export const vkThemes: VkTheme[] = [
@@ -71,11 +68,6 @@ export const vkQuestions: [VkQuestion<WeightedOption>, VkQuestion<WeightedOption
 export const vkPhotoOptions: Array<AnswerOption<'accept' | 'skip'>> = [
   { id: 'accept', label: vkCopy.digitizeAccept, metadata: ['ракурс', 'освещение', 'композиция', 'обработка'] },
   { id: 'skip', label: vkCopy.digitizeSkip, metadata: [] },
-]
-
-export const vkGenderOptions: Array<AnswerOption<VkGender>> = [
-  { id: 'male', label: 'М', metadata: [] },
-  { id: 'female', label: 'Ж', metadata: [] },
 ]
 
 export const discoveryRules: Record<string, string> = {

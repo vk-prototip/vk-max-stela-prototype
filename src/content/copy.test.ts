@@ -9,13 +9,14 @@ describe('approved September 29 copy', () => {
     expect(onboardingIntroductions.max.steps).toHaveLength(3)
     expect(onboardingIntroductions['vk-video'].steps.map(step => step.replace(/\s+/g, ' '))).toEqual([
       'Расскажи, какой контент ты любишь',
-      'Получи персональную подборку от технологии Discovery',
+      'Получи персональную подборку от технологий Discovery',
     ])
     expect(vkCopy.digitizeDescription.replace(/\s+/g, ' ')).toBe('На его основе превратим тебя в главного героя твоей персональной подборки')
   })
 
   it('uses the new three-question VK script and conditional photo step', () => {
     expect(vkCopy.digitizeQuestion).toBe('Сделаем фото?')
+    expect(vkCopy.digitizeAccept).toBe('Да, давайте')
     expect(`${vkCopy.digitizeNoticePrefix}${vkCopy.digitizeNoticeAction}.`).toBe('Отвечая «Да, давайте», вы принимаете условия использования персональных данных.')
     expect(vkQuestions.map(({ options }) => options.length)).toEqual([4, 4, 4])
     expect(vkQuestions[0].prompt).toBe('У тебя внезапно освободился вечер. Что включаем?')
@@ -26,9 +27,10 @@ describe('approved September 29 copy', () => {
   })
 
   it('keeps the start invitation and sends each branch to its panel', () => {
-    expect(onboardingCopy.voice).toBe('Со мной можно говорить своими словами. Скажи, например, «поехали»')
-    expect(maxTransitionPrompt).toBe('Пройди к правой панели,\nчтобы начать')
-    expect(vkCopy.finalDirection.replace(/\s+/g, ' ')).toBe('Пройди к левой стене VK Видео – там твоя подборка оживёт вокруг тебя.')
+    expect(onboardingCopy.voice).toBe('Со мной можно говорить своими словами.\nСкажи, например, «ПОЕХАЛИ»')
+    expect(maxTransitionPrompt).toBe('Пройди к правой панели, чтобы начать')
+    expect(vkCopy.finalDirection.replace(/\s+/g, ' ')).toBe('Пройди к левой панели VK Видео – там твоя подборка оживёт вокруг тебя')
+    expect(vkCopy.finalQrCaption).toBe('Узнай больше о Discovery')
   })
 
   it('uses the new Discovery activation screen copy', () => {

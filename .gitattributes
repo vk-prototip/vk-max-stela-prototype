@@ -1,0 +1,16 @@
+* text=auto
+*.png binary
+*.webp binary
+*.woff2 binary
+*.ttf binary
+*.m4a binary
+
+экспорты/ export-ignore
+экспорты/** export-ignore
+local-sources/ export-ignore
+local-sources/** export-ignore
+*.m4a export-ignore
+бриф_*.txt export-ignore
+бриф_*.md export-ignore
+qa-artifacts/ export-ignore
+qa-artifacts/** export-ignore

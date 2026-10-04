@@ -5,7 +5,10 @@ import type { Product } from '../types/prototype'
 export const onboardingCopy = {
   homeQuestion: 'ЧТО ТЕБЕ\nСЕЙЧАС БЛИЖЕ?',
   spokenGreeting: 'Добро пожаловать в экосистему VK. Здесь лента подстраивается под тебя.',
-  voice: 'Со мной можно говорить своими словами. Скажи, например, «поехали»',
+  voice: 'Со мной можно говорить своими словами.\nСкажи, например, «ПОЕХАЛИ»',
+  // MAX line breaks and start label: Figma MAX, checked 2026-10-03.
+  maxVoice: 'Со мной можно говорить своими словами.\nСкажи, например, «ПОЕХАЛИ»',
+  maxStart: 'Начать',
   touch: 'или просто нажми',
   start: 'НАЧАТЬ',
 }
@@ -15,18 +18,19 @@ export const onboardingIntroductions: Record<Product, {
   steps: string[]
 }> = {
   max: {
+    // Historical title retained as copy only; hidden per the onboarding comment, 2026-10-03.
     title: 'Исследуй свои\nвозможности с MAX!',
     steps: [
-      'Ответь на пару вопросов',
+      'Ответь на пару\nвопросов',
       'Получи персональную\nмиссию',
-      'Узнай больше о\u00a0пользе MAX\u00a0для\u00a0тебя',
+      'Узнай больше\nо возможностях MAX\nдля тебя',
     ],
   },
   'vk-video': {
     title: 'Исследуй мир\nвместе с VK Видео',
     steps: [
       'Расскажи, какой\nконтент ты любишь',
-      'Получи персональную\nподборку от технологии\nDiscovery',
+      'Получи персональную\nподборку от технологий\nDiscovery',
     ],
   },
 }
